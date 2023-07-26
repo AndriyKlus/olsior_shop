@@ -14,19 +14,19 @@ public class TwitchGiftsDB {
                 List.of(new TwitchGift(
                                 "Листівка від Olsior",
                                 150000,
-                                Collections.singletonList("images\\Olsior_postcard.jpg")
+                                Collections.singletonList("https://i.imgur.com/BhmPRPi.jpg")
                         ),
                         new TwitchGift(
                                 "Наліпки зі смайлами каналу",
                                 125000,
-                                Collections.singletonList("images\\Olsior_stickers.jpg")
+                                Collections.singletonList("https://i.imgur.com/xBxXY7I.jpg")
                         ),
                         new TwitchGift(
                                 "Набір з трьох значків зі смайлами каналу",
                                 100000,
                                 List.of("РЕСПЕКОТ", "ПРАЙД", "НАРУТО", "МЯВ", "БРО", "РЕЙДЖ", "СІК", "ПЛЕД",
                                         "КЛОУН", "БІБЛМІРА", "ВЕСЕЛКА", "БАВОВНА", "АУФ", "ЗРОЗ", "ШЕЙХ"),
-                                Collections.singletonList("images\\Olsior_stripe.jpg")
+                                Collections.singletonList("https://i.imgur.com/HZYHZAL.jpg")
                         )
                 )
         );

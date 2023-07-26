@@ -58,7 +58,7 @@ public class SendMessageService {
 
     public void sendNoAvaiableNow(Message message) {
         SendPhoto msg = SendPhoto.builder()
-                .photo(new InputFile(new File("images\\Merch_soon.jpg")))
+                .photo(new InputFile("https://i.imgur.com/Hjdy0uU.jpg"))
                 .caption("Ми плануємо запуск магазину мерча в серпні, а поки що ти можеш замовити наші унікальні нагороди за бали каналу твіча")
                 .chatId(message.getChatId())
                 .replyMarkup(getMainMarkup())
@@ -233,7 +233,7 @@ public class SendMessageService {
             inlineKeyboardMarkup.setKeyboard(inlineKeyboardMerch);
             SendPhoto merchMsg = SendPhoto.builder()
                     .chatId(message.getChatId())
-                    .photo(new InputFile(new File(twitchGift.getUrls().get(0))))
+                    .photo(new InputFile(twitchGift.getUrls().get(0)))
                     .caption(twitchGift.getName() + "\n" +
                             "Бали каналу: <b>" + twitchGift.getPoints() + "</b>")
                     .replyMarkup(inlineKeyboardMarkup)
@@ -293,7 +293,7 @@ public class SendMessageService {
             text = "Оберіть смайл для першого значка";
             SendPhoto msg = SendPhoto.builder()
                     .caption(text)
-                    .photo(new InputFile(new File("images\\Olsior_stickers_names.jpg")))
+                    .photo(new InputFile("https://i.imgur.com/8m0qYc3.jpg"))
                     .chatId(message.getChatId())
                     .replyMarkup(getChooseStickerMarkup())
                     .build();
@@ -522,7 +522,7 @@ public class SendMessageService {
     public void sendInstruction(Message message) {
         SendPhoto msg = SendPhoto.builder()
                 .caption("Щоб все спрацювало, ти маєш бути залагованим в свій твіч аккаунт та мати потрібну для цих нагород кількість балів каналу")
-                .photo(new InputFile(new File("images\\instruction.jpg")))
+                .photo(new InputFile("https://i.imgur.com/mZhMxzH.jpg"))
                 .chatId(message.getChatId())
                 .replyMarkup(getInstructionMarkup())
                 .parseMode("HTML")
