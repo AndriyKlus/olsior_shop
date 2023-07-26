@@ -3,6 +3,7 @@ package olsior.shop.telegram.processor;
 
 import olsior.shop.telegram.handler.CallbackQueryHandler;
 import olsior.shop.telegram.handler.MessageHandler;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -13,7 +14,7 @@ public class DefaultProcessor implements Processor {
     private final CallbackQueryHandler callbackQueryHandler;
     public final MessageHandler messageHandler;
 
-    public DefaultProcessor(CallbackQueryHandler callbackQueryHandler, MessageHandler messageHandler) {
+    public DefaultProcessor(@Lazy CallbackQueryHandler callbackQueryHandler, @Lazy MessageHandler messageHandler) {
         this.callbackQueryHandler = callbackQueryHandler;
         this.messageHandler = messageHandler;
     }
