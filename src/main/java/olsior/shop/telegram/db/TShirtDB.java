@@ -13,27 +13,33 @@ public class TShirtDB {
         tShirts.addAll(
                 List.of(new TShirt(
                                 "Футболка «ЗРОЗ»",
-                                600,
-                                "Бавовна",
-                                "Прикольна футболка",
+                                1300,
+                                "Склад:\n" +
+                                        "95% бавовна\n" +
+                                        "5% еластан",
+                                "Подивитись більше фото\nhttps://www.instagram.com/olsiorshop/",
                                 List.of("XS", "S-M", "L-XL"),
-                                List.of("images\\Merch.png", "images\\Merch.png", "images\\Merch.png")
+                                List.of("\\root\\olsiorShop\\olsior_shop\\images\\zroz1.jpg", "\\root\\olsiorShop\\olsior_shop\\images\\zroz2.jpg", "\\root\\olsiorShop\\olsior_shop\\images\\zroz3.jpg")
                         ),
                         new TShirt(
                                 "Футболка «Лагідна Українізація»",
-                                600,
-                                "Текстиль",
-                                "Прикольна футболка",
+                                1300,
+                                "Склад:\n" +
+                                        "95% бавовна\n" +
+                                        "5% еластан",
+                                "Подивитись більше фото\nhttps://www.instagram.com/olsiorshop/",
                                 List.of("XS", "S-M", "L-XL"),
-                                List.of("images\\Merch.png", "images\\Merch.png", "images\\Merch.png")
+                                List.of("\\root\\olsiorShop\\olsior_shop\\images\\ukrainization1.jpg", "\\root\\olsiorShop\\olsior_shop\\images\\ukrainization2.jpg", "\\root\\olsiorShop\\olsior_shop\\images\\ukrainization3.jpg")
                         ),
                         new TShirt(
                                 "Футболка «Полапав і спить»",
-                                600,
-                                "Бавовна",
-                                "Прикольна футболка",
+                                1300,
+                                "Склад:\n" +
+                                        "95% бавовна\n" +
+                                        "5% еластан",
+                                "Подивитись більше фото\nhttps://www.instagram.com/olsiorshop/",
                                 List.of("XS", "S-M", "L-XL"),
-                                List.of("images\\Merch.png", "images\\Merch.png", "images\\Merch.png")
+                                List.of("\\root\\olsiorShop\\olsior_shop\\images\\paws1.jpg", "\\root\\olsiorShop\\olsior_shop\\images\\paws2.jpg", "\\root\\olsiorShop\\olsior_shop\\images\\paws3.jpg")
                         )
                 )
         );

@@ -15,6 +15,8 @@ public interface MessageSender {
 
     File findPhoto(GetFile getFile);
 
+    File findFile(GetFile getFile);
+
     void downloadFile(File file, java.io.File saveFile);
 
     void sendMediaGroup(SendMediaGroup sendMediaGroup);

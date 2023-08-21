@@ -14,7 +14,7 @@ import java.util.List;
 
 public class GoogleAuthorizeUtil {
 
-    private static final String CREDENTIALS_PATH = "src/main/resources/credentials.p12";
+    private static final String CREDENTIALS_PATH = "/root/olsiorShop/olsior_shop/src/main/resources/credentials.p12";
 
     public static Credential authorize() throws IOException, GeneralSecurityException {
 

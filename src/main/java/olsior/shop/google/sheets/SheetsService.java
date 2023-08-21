@@ -233,7 +233,9 @@ public class SheetsService {
 
     public static void saveOrderApplication(BotUser botUser) {
         try {
-            ValueRange valueRange = getRowProductApplication(botUser);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            ValueRange valueRange = getRowProductApplication(botUser, dtf.format(now));
             sheetsService.spreadsheets().values()
                     .append(PRODUCTS_APPLICATION_SPREADSHEETS_ID, "A1", valueRange)
                     .setValueInputOption("USER_ENTERED")
@@ -295,12 +297,13 @@ public class SheetsService {
                                 )));
     }
 
-    private static ValueRange getRowProductApplication(BotUser botUser) {
+    private static ValueRange getRowProductApplication(BotUser botUser, String date) {
         return new ValueRange()
                 .setValues(List.of(
                         Arrays.asList("@" + botUser.getUsername(),
                                 botUser.getId(),
-                                botUser.gettShirtPurchase().getName() + " Розмір: " + botUser.gettShirtPurchase().getSize()
+                                botUser.gettShirtPurchase().getName() + " Розмір: " + botUser.gettShirtPurchase().getSize(),
+                                date
                         )));
     }
 

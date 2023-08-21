@@ -7,6 +7,7 @@ import olsior.shop.telegram.domain.TShirt;
 import olsior.shop.telegram.domain.TShirtPurchase;
 import olsior.shop.telegram.domain.TwitchGift;
 import olsior.shop.telegram.messagesender.MessageSender;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
@@ -23,6 +24,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
 
 import static olsior.shop.telegram.service.KeyboardService.*;
@@ -48,12 +52,30 @@ public class SendMessageService {
     public void sendTShirtsProducts(Message message) {
         TShirtDB.getTShirts()
                 .forEach(tShirt -> sendMediaGroup(message, tShirt));
-        SendMessage msg = SendMessage.builder()
+        /*SendMessage msg = SendMessage.builder()
                 .text("Додайте товари до корзини")
                 .chatId(message.getChatId())
                 .replyMarkup(getShirtsMarkup())
                 .build();
+        messageSender.sendMessage(msg);*/
+    }
+
+    public void sendTShirtsMessage(Message message) {
+        SendMessage msg = SendMessage.builder()
+                .text("Купляй ексклюзивні футболки від Olsior, поки вони не закінчилися \uD83D\uDC40")
+                .chatId(message.getChatId())
+                .replyMarkup(getShirtsMarkup())
+                .build();
         messageSender.sendMessage(msg);
+    }
+
+    public void sendSizeGridMessage(Message message) {
+        SendPhoto msg = SendPhoto.builder()
+                .chatId(message.getChatId())
+                .photo(new InputFile("https://i.imgur.com/f349m2z.jpg"))
+                .replyMarkup(getShirtsWithNoGridMarkup())
+                .build();
+        messageSender.sendPhoto(msg);
     }
 
     public void sendNoAvaiableNow(Message message) {
@@ -75,8 +97,11 @@ public class SendMessageService {
                 medias.add(
                         InputMediaPhoto.builder()
                                 .media("attach://" + mediaName)
-                                .caption(tShirt.getName() + "\n" +
-                                        "Ціна: <b>" + tShirt.getPrice() + "</b> грн")
+                                .caption(tShirt.getName() + "\n\n" +
+                                        tShirt.getDescription() + "\n\n" +
+                                        tShirt.getMaterial() + "\n\n" +
+                                        "Ціна футболки: " + tShirt.getPrice() + " грн" + "\n" +
+                                        "*100 грн з кожної проданої футболки перераховуємо на ЗСУ")
                                 .mediaName(mediaName)
                                 .isNewMedia(true)
                                 .newMediaFile(new File(url))
@@ -105,19 +130,20 @@ public class SendMessageService {
     }
 
     public void sendMessageAboutSize(Message message) {
-        SendMessage msg = SendMessage.builder()
-                .text("Оберіть розмір футболки")
+        SendPhoto msg = SendPhoto.builder()
+                .caption("Оберіть розмір футболки")
+                .photo(new InputFile("https://i.imgur.com/f349m2z.jpg"))
                 .chatId(message.getChatId())
                 .replyMarkup(getSizesKeyboard())
                 .build();
-        messageSender.sendMessage(msg);
+        messageSender.sendPhoto(msg);
     }
 
     public void sendItemWasSavedToCart(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Предмет доданий до корзини")
+                .text("Чудовий вибір! Товар вже в корзині.\nЧи бажаєш замовити щось ще?")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getShirtWasAddedMarkup())
                 .build();
         messageSender.sendMessage(msg);
     }
@@ -160,7 +186,6 @@ public class SendMessageService {
                 stringBuilder.append(w++)
                         .append(". ")
                         .append(tShirt.getName())
-                        .append("\nМатеріал: ")
                         .append(tShirt.getMaterial())
                         .append("\nРозмір: ")
                         .append(tShirt.getSize())
@@ -207,6 +232,15 @@ public class SendMessageService {
                 .text("Ок, ок, біжу")
                 .chatId(message.getChatId())
                 .replyMarkup(getMainMarkup())
+                .build();
+        messageSender.sendMessage(msg);
+    }
+
+    public void sendGoBackToShirts(Message message) {
+        SendMessage msg = SendMessage.builder()
+                .text("Ок, ок, біжу")
+                .chatId(message.getChatId())
+                .replyMarkup(getShirtsMarkup())
                 .build();
         messageSender.sendMessage(msg);
     }
@@ -281,7 +315,7 @@ public class SendMessageService {
                         botUser.getTwitchGiftsCart().get(botUser.getTwitchGiftsCart().size()-1).getName() +
                         "\nПотрібно повнернути бали, якщо витрачені" +
                         "\nТвіч нікнейм: " + botUser.getTwitchNickname())
-                .chatId("358029493")
+                .chatId("6354732700")
                 .replyMarkup(getMainMarkup())
                 .build();
         messageSender.sendMessage(msg);
@@ -532,7 +566,7 @@ public class SendMessageService {
 
     public void sendHelp(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Якщо у тебе щось не виходить з нагородами, напиши нам на аккаунт @olsiorshop, і ми допоможемо тобі розібратись")
+                .text("Якщо у тебе щось не виходить з футболками/нагородами, напиши нам на аккаунт @olsiorshop, і ми допоможемо тобі розібратись")
                 .chatId(message.getChatId())
                 .replyMarkup(getMainMarkup())
                 .parseMode("HTML")
@@ -562,6 +596,15 @@ public class SendMessageService {
                 .build();
         messageSender.sendMessage(msg);
     }
+
+    public void sendWaitingForReceipt(Message message) {
+        SendMessage msg = SendMessage.builder()
+                .text("Очікую скріншот квитанції...")
+                .chatId(message.getChatId())
+                .build();
+        messageSender.sendMessage(msg);
+    }
+
 
     private String getConfirmationForm(BotUser botUser) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -625,10 +668,25 @@ public class SendMessageService {
     }
 
     public void sendPhotoAccepted(Message message) {
-        List<PhotoSize> photos = message.getPhoto();
-        GetFile getFile = new GetFile(photos.get(photos.size() - 1).getFileId());
-        org.telegram.telegrambots.meta.api.objects.File file = messageSender.findPhoto(getFile);
-        messageSender.downloadFile(file, new java.io.File("receipt\\receipt" + "_" + message.getChatId() + ".png"));
+        if (message.hasPhoto()) {
+            List<PhotoSize> photos = message.getPhoto();
+            GetFile getFile = new GetFile(photos.get(photos.size() - 1).getFileId());
+            org.telegram.telegrambots.meta.api.objects.File file = messageSender.findPhoto(getFile);
+            messageSender.downloadFile(file, new java.io.File("\\root\\olsiorShop\\olsior_shop\\receipt\\receipt" + "_" + message.getChatId() + ".png"));
+        } else {
+            String uploadedFileId = message.getDocument().getFileId();
+            GetFile uploadedFile = new GetFile();
+            uploadedFile.setFileId(uploadedFileId);
+            String uploadedFilePath = messageSender.findFile(uploadedFile).getFilePath();
+            File localFile = new File("\\root\\olsiorShop\\olsior_shop\\receipt\\receipt" + "_" + message.getChatId() + ".png");
+            try {
+                InputStream is = new URL("https://api.telegram.org/file/bot" + "6020040632:AAHHL5uowE2IizwP16AmqkT8a7U0lhtF5_M" + "/" + uploadedFilePath).openStream();
+                FileUtils.copyInputStreamToFile(is, localFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
 
         SendMessage msg = SendMessage.builder()
                 .text("Квитанція збережена.\nЧи потрібно з вами зв‘язатися для підтвердження замовлення?")
@@ -716,14 +774,14 @@ public class SendMessageService {
                 textMessage += "\n\nНеобхідно підтвердити онлайн оплату";
             if(Objects.nonNull(botUser.getPaymentMethod()) && botUser.getPaymentMethod().equals("Онлайн оплата")) {
                 SendPhoto msg = SendPhoto.builder()
-                        .photo(new InputFile(new File("receipt\\receipt_" + botUser.getId() + ".png")))
+                        .photo(new InputFile(new File("\\root\\olsiorShop\\olsior_shop\\receipt\\receipt_" + botUser.getId() + ".png")))
                         .caption(textMessage)
                         .chatId("6354732700")
                         .replyMarkup(getMainMarkup())
                         .parseMode("HTML")
                         .build();
                 messageSender.sendPhoto(msg);
-                File file = new File("receipt\\receipt_" + botUser.getId() + ".png");
+                File file = new File("\\root\\olsiorShop\\olsior_shop\\receipt\\receipt_" + botUser.getId() + ".png");
                 file.delete();
             } else {
                 SendMessage msg = SendMessage.builder()
@@ -737,7 +795,7 @@ public class SendMessageService {
         } else {
             SendMessage msg = SendMessage.builder()
                     .text(textMessage)
-                    .chatId("358029493")
+                    .chatId("6354732700")
                     .replyMarkup(getMainMarkup())
                     .parseMode("HTML")
                     .build();
@@ -769,12 +827,14 @@ public class SendMessageService {
                     .append(sum)
                     .append("\n\n");
         }
+
         if (Objects.nonNull(botUser.getTwitchGiftsCart()) && !botUser.getTwitchGiftsCart().isEmpty()) {
             stringBuilder.append("Нагороди за бали каналу Twitch:")
                     .append("\n\n");
             int w = 1;
             for (TwitchGift twitchGift : botUser.getTwitchGiftsCart()) {
-                stringBuilder.append(w++)
+                stringBuilder.append("\n")
+                        .append(w++)
                         .append(". ")
                         .append(twitchGift.getName());
                 if (Objects.nonNull(twitchGift.getStickersNames()) && !twitchGift.getStickersNames().isEmpty())

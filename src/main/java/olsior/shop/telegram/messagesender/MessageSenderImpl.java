@@ -51,6 +51,16 @@ public class MessageSenderImpl implements MessageSender {
         return null;
     }
 
+    @Override
+    public File findFile(GetFile getFile){
+        try {
+            return olsiorShopBot.execute(getFile);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void downloadFile(File file, java.io.File saveFile){
         try {
             olsiorShopBot.downloadFile(file, saveFile);

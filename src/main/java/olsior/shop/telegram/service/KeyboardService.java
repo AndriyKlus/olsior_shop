@@ -40,10 +40,32 @@ public class KeyboardService {
         KeyboardRow row1 = new KeyboardRow();
         KeyboardRow row2 = new KeyboardRow();
         KeyboardRow row3 = new KeyboardRow();
+        row1.add("Розмірна сітка \uD83D\uDCCF");
+        row1.add(TShirtDB.getTShirts().get(0).getName());
+        row2.add(TShirtDB.getTShirts().get(1).getName());
+        row2.add(TShirtDB.getTShirts().get(2).getName());
+        row3.add("Повернутись назад ◀️");
+        row3.add("Потрібна допомога ❓");
+        keyboardRows.add(row1);
+        keyboardRows.add(row2);
+        keyboardRows.add(row3);
+        markup.setKeyboard(keyboardRows);
+        markup.setResizeKeyboard(true);
+
+        return markup;
+    }
+
+    public static ReplyKeyboardMarkup getShirtsWithNoGridMarkup() {
+        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow row1 = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+        KeyboardRow row3 = new KeyboardRow();
         row1.add(TShirtDB.getTShirts().get(0).getName());
         row1.add(TShirtDB.getTShirts().get(1).getName());
         row2.add(TShirtDB.getTShirts().get(2).getName());
         row3.add("Повернутись назад ◀️");
+        row3.add("Потрібна допомога ❓");
         keyboardRows.add(row1);
         keyboardRows.add(row2);
         keyboardRows.add(row3);
@@ -92,6 +114,19 @@ public class KeyboardService {
         return markup;
     }
 
+    public static ReplyKeyboardMarkup getShirtWasAddedMarkup() {
+        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow row1 = new KeyboardRow();
+        row1.add("Продовжити покупки \uD83D\uDC55");
+        row1.add("Переглянути корзину \uD83E\uDDFA");
+        keyboardRows.add(row1);
+        markup.setKeyboard(keyboardRows);
+        markup.setResizeKeyboard(true);
+
+        return markup;
+    }
+
     public static ReplyKeyboardMarkup getChooseStickerMarkup() {
         ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
@@ -118,10 +153,13 @@ public class KeyboardService {
         ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         KeyboardRow row1 = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
         row1.add("XS");
         row1.add("S-M");
         row1.add("L-XL");
+        row2.add("Повернутись до вибору ◀️");
         keyboardRows.add(row1);
+        keyboardRows.add(row2);
         markup.setKeyboard(keyboardRows);
         markup.setResizeKeyboard(true);
 
@@ -174,6 +212,9 @@ public class KeyboardService {
                 keyboardRows.add(row);
             }
         }
+        KeyboardRow row = new KeyboardRow();
+        row.add("Перейти до оформлення замовлення \uD83D\uDCC3");
+        keyboardRows.add(row);
         markup.setKeyboard(keyboardRows);
         markup.setResizeKeyboard(true);
 
@@ -288,7 +329,7 @@ public class KeyboardService {
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         KeyboardRow row1 = new KeyboardRow();
         KeyboardRow row2 = new KeyboardRow();
-        row1.add("Підтвердити замовлення ✅");
+        row1.add("Підтвердити дані ✅");
         row2.add("Додати коментар \uD83D\uDCC4");
         row2.add("Ввести інші дані ◀️");
         keyboardRows.add(row1);
@@ -303,7 +344,7 @@ public class KeyboardService {
         ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         KeyboardRow row1 = new KeyboardRow();
-        row1.add("Підтвердити замовлення ✅");
+        row1.add("Підтвердити дані ✅");
         row1.add("Повернутись до вибору товару ◀️");
         keyboardRows.add(row1);
         markup.setKeyboard(keyboardRows);

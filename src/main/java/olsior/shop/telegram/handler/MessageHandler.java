@@ -37,9 +37,13 @@ public class MessageHandler implements Handler<Message> {
                     sendMessageService.sendGreetingMessage(message);
                     return;
                 case "Мерч Olsishop \uD83D\uDC55":
-                    ///botUser.setPosition(Position.ADD_SHIRT);
-                    //sendMessageService.sendTShirtsProducts(message);
-                    sendMessageService.sendNoAvaiableNow(message);
+                case "Продовжити покупки \uD83D\uDC55":
+                    botUser.setPosition(Position.ADD_SHIRT);
+                    sendMessageService.sendTShirtsMessage(message);
+                    sendMessageService.sendTShirtsProducts(message);
+                    return;
+                case "Розмірна сітка \uD83D\uDCCF":
+                    sendMessageService.sendSizeGridMessage(message);
                     return;
                 case "Переглянути корзину \uD83E\uDDFA":
                     sendMessageService.sendCartInfo(botUser, message);
@@ -53,6 +57,10 @@ public class MessageHandler implements Handler<Message> {
                 case "Назад ◀️":
                     botUser.setPosition(Position.ADD_PRODUCT);
                     sendMessageService.sendGoBack(message);
+                    return;
+                case "Повернутись до вибору ◀️":
+                    botUser.setPosition(Position.ADD_SHIRT);
+                    sendMessageService.sendGoBackToShirts(message);
                     return;
                 case "Змінити спосіб оплати ⬅️":
                     botUser.setPosition(Position.PAYMENT_METHOD);
@@ -187,8 +195,8 @@ public class MessageHandler implements Handler<Message> {
                     break;
 
                 case PHONE_NUMBER:
-                    botUser.setPosition(Position.CONFIRMATION);
                     botUser.setPhoneNumber(message.getText());
+                    botUser.setPosition(Position.CONFIRMATION);
                     sendMessageService.sendConfirmationForm(botUser, message);
                     break;
 
@@ -200,23 +208,33 @@ public class MessageHandler implements Handler<Message> {
 
                 case PAYMENT_METHOD:
                     botUser.setPaymentMethod(message.getText().substring(0, message.getText().length() - 3));
-                    botUser.setPosition(Position.CONFIRMATION);
-                    sendMessageService.sendConfirmationForm(botUser, message);
-                    break;
-
-                case CONFIRMATION:
-                    if (Objects.isNull(botUser.getPaymentMethod())) {
-                        saveGiftOrder(botUser, message);
-                        break;
-                    }
-                    if (!botUser.getCountry().equals(UKRAINE)) {
-                        saveProductOrderImposedPaymentAbroad(botUser, message);
-                    } else if (botUser.getPaymentMethod().equals("Онлайн оплата")) {
+                    if (botUser.getPaymentMethod().equals("Онлайн оплата")) {
                         botUser.setPosition(Position.ONLINE_PAYMENT);
                         sendMessageService.sendOnlinePayment(message);
                     } else {
                         saveProductOrderImposedPaymentUkraine(botUser, message);
                     }
+                    break;
+
+                case CONFIRMATION:
+                    if (Objects.nonNull(botUser.gettShirtsCart()) && !botUser.gettShirtsCart().isEmpty() && botUser.getCountry().equals(UKRAINE)) {
+                        botUser.setPosition(Position.PAYMENT_METHOD);
+                        sendMessageService.sendChoosePaymentMethod(message);
+                    }
+                    if (Objects.nonNull(botUser.getTwitchGiftsCart()) && !botUser.getTwitchGiftsCart().isEmpty()) {
+                        saveGiftOrder(botUser, message);
+                    }
+                    if (!botUser.getCountry().equals(UKRAINE)) {
+                        botUser.setPosition(Position.ONLINE_PAYMENT);
+                        botUser.setPaymentMethod("Після отримання накладеним платежем");
+                        botUser.setPostOffice("-");
+                        sendMessageService.sendOnlinePayment(message);
+                    }
+
+                    break;
+
+                case ONLINE_PAYMENT:
+                    sendMessageService.sendWaitingForReceipt(message);
                     break;
 
                 case PAYMENT_CONFIRMATION:
@@ -239,10 +257,10 @@ public class MessageHandler implements Handler<Message> {
             }
         } else if (message.hasContact()) {
             BotUser botUser = findBotUserOrCreate(message);
-            botUser.setPosition(Position.CONFIRMATION);
             botUser.setPhoneNumber(message.getContact().getPhoneNumber());
+            botUser.setPosition(Position.CONFIRMATION);
             sendMessageService.sendConfirmationForm(botUser, message);
-        } else if (message.hasPhoto()) {
+        } else if (message.hasPhoto() || message.hasDocument()) {
             processReceipt(message);
         }
 
