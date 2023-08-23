@@ -18,6 +18,7 @@ public class BotUser {
     private String phoneNumber;
     private String InfoAboutDelivery;
     private String paymentMethod;
+    private boolean paymentConfirmation;
 
     public String getUsername() {
         if(Objects.isNull(username))
@@ -131,6 +132,18 @@ public class BotUser {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getPaymentConfirmation() {
+        if (paymentConfirmation) {
+            return "Потрібне підтвердження оплати";
+        } else {
+            return "-";
+        }
+    }
+
+    public void setPaymentConfirmation(boolean paymentConfirmation) {
+        this.paymentConfirmation = paymentConfirmation;
     }
 
     public String getTwitchGiftsCartString() {

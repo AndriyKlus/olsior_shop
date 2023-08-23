@@ -241,6 +241,7 @@ public class KeyboardService {
         KeyboardRow row2 = new KeyboardRow();
         row1.add("Україна \uD83C\uDDFA\uD83C\uDDE6");
         row1.add("По світу \uD83C\uDF0D");
+        row2.add("Допомога ❔");
         row2.add("Повернутись до вибору товару ◀️");
         keyboardRows.add(row1);
         keyboardRows.add(row2);
@@ -254,6 +255,7 @@ public class KeyboardService {
         ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         KeyboardRow row1 = new KeyboardRow();
+        row1.add("Допомога ❔");
         row1.add("Повернутись до вибору товару ◀️");
         keyboardRows.add(row1);
         markup.setKeyboard(keyboardRows);

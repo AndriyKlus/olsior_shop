@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -312,7 +313,7 @@ public class SendMessageService {
     public void sendNoTwitchGiftForAdmin(BotUser botUser) {
         SendMessage msg = SendMessage.builder()
                 .text("Замовлення предемету за бали каналу:\n" +
-                        botUser.getTwitchGiftsCart().get(botUser.getTwitchGiftsCart().size()-1).getName() +
+                        botUser.getTwitchGiftsCart().get(botUser.getTwitchGiftsCart().size() - 1).getName() +
                         "\nПотрібно повнернути бали, якщо витрачені" +
                         "\nТвіч нікнейм: " + botUser.getTwitchNickname())
                 .chatId("6354732700")
@@ -323,7 +324,7 @@ public class SendMessageService {
 
     public void sendChooseSticker(Message message, int number) {
         String text;
-        if(number == 1) {
+        if (number == 1) {
             text = "Оберіть смайл для першого значка";
             SendPhoto msg = SendPhoto.builder()
                     .caption(text)
@@ -333,8 +334,7 @@ public class SendMessageService {
                     .build();
             messageSender.sendPhoto(msg);
             return;
-        }
-        else if (number == 2)
+        } else if (number == 2)
             text = "Оберіть смайл для другого значка";
         else
             text = "Оберіть смайл для третього значка";
@@ -772,16 +772,17 @@ public class SendMessageService {
         if (botUser.getCountry().equals("Україна")) {
             if (confirmation)
                 textMessage += "\n\nНеобхідно підтвердити онлайн оплату";
-            if(Objects.nonNull(botUser.getPaymentMethod()) && botUser.getPaymentMethod().equals("Онлайн оплата")) {
-                SendPhoto msg = SendPhoto.builder()
-                        .photo(new InputFile(new File("\\root\\olsiorShop\\olsior_shop\\receipt\\receipt_" + botUser.getId() + ".png")))
+            if (Objects.nonNull(botUser.getPaymentMethod()) && botUser.getPaymentMethod().equals("Онлайн оплата")) {
+                SendDocument msg = SendDocument.builder()
+                        .document(new InputFile(new File("receipt\\receipt_" + botUser.getId() + ".png")))
                         .caption(textMessage)
-                        .chatId("6354732700")
+                        .chatId("358029493")
                         .replyMarkup(getMainMarkup())
                         .parseMode("HTML")
                         .build();
-                messageSender.sendPhoto(msg);
-                File file = new File("\\root\\olsiorShop\\olsior_shop\\receipt\\receipt_" + botUser.getId() + ".png");
+                messageSender.sendDocument(msg);
+
+                File file = new File("receipt\\receipt_" + botUser.getId() + ".png");
                 file.delete();
             } else {
                 SendMessage msg = SendMessage.builder()
@@ -905,7 +906,17 @@ public class SendMessageService {
                 getProductForTheAdminForm(botUser);
         SendMessage msg = SendMessage.builder()
                 .text(stringBuilder)
-                .chatId(message.getChatId())
+                .chatId("6354732700")
+                .replyMarkup(getMainMarkup())
+                .parseMode("HTML")
+                .build();
+        messageSender.sendMessage(msg);
+    }
+
+    public void sendNotifyToUser(Message message) {
+        SendMessage msg = SendMessage.builder()
+                .text("Футболка, на яку ви залишали заявку знову доступна у продажі, для замовлення пишіть на @olsiorshop або замовляйте у боті.")
+                .chatId(message.getText().substring(message.getText().indexOf(' ') + 1))
                 .replyMarkup(getMainMarkup())
                 .parseMode("HTML")
                 .build();

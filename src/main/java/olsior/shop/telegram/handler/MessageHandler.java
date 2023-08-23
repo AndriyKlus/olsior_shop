@@ -251,10 +251,14 @@ public class MessageHandler implements Handler<Message> {
                     sendMessageService.sendProblemToAdmin(message, botUser);
                     break;
 
-
                 default:
                     break;
             }
+
+            if (message.getText().contains("Сповістити")) {
+                sendMessageService.sendNotifyToUser(message);
+            }
+
         } else if (message.hasContact()) {
             BotUser botUser = findBotUserOrCreate(message);
             botUser.setPhoneNumber(message.getContact().getPhoneNumber());
@@ -345,6 +349,7 @@ public class MessageHandler implements Handler<Message> {
         botUser.settShirtsCart(new ArrayList<>());
         botUser.settShirtPurchase(null);
         botUser.setPaymentMethod(null);
+        botUser.setPaymentConfirmation(false);
     }
 
     private void saveProductOrderWithNoOnlineConfirmation(BotUser botUser, Message message) {
@@ -359,6 +364,7 @@ public class MessageHandler implements Handler<Message> {
     }
 
     private void saveProductOrderWithOnlineConfirmation(BotUser botUser, Message message) {
+        botUser.setPaymentConfirmation(true);
         if (updateNumberOfItems(botUser) && addProductsToSpreadSheets(botUser)) {
             sendMessageService.sendOnlinePaymentWithConfirmation(message);
             sendMessageService.sendMessageToAdmin(botUser, true);

@@ -4,6 +4,7 @@ import olsior.shop.telegram.OlsiorShopBot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -36,6 +37,15 @@ public class MessageSenderImpl implements MessageSender {
     public void sendPhoto(SendPhoto sendPhoto) {
         try {
             olsiorShopBot.execute(sendPhoto);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendDocument(SendDocument sendDocument) {
+        try {
+            olsiorShopBot.execute(sendDocument);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
