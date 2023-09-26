@@ -4,6 +4,7 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
 import olsior.shop.telegram.db.TShirtDB;
 import olsior.shop.telegram.domain.BotUser;
+import olsior.shop.telegram.domain.TShirtPurchase;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -266,8 +267,9 @@ public class SheetsService {
     private static ValueRange getRowForProductOrder(BotUser botUser, String date) {
         return new ValueRange()
                 .setValues(List.of(
-                        Arrays.asList(botUser.getUsername(),
-                                botUser.gettShirtsCart().toString(),
+                        Arrays.asList("✖️",
+                                botUser.getUsername(),
+                                botUser.gettShirtsCart().stream().map(TShirtPurchase::getStringForTable).reduce("\n", String::concat),
                                 botUser.getCountry(),
                                 botUser.getFullName(),
                                 botUser.getAddress(),
@@ -276,14 +278,16 @@ public class SheetsService {
                                 botUser.getInfoAboutDelivery(),
                                 botUser.getPaymentMethod(),
                                 date,
-                                botUser.getId()
+                                botUser.getId(),
+                                botUser.getPaymentConfirmation()
                         )));
     }
 
     private static ValueRange getRowForGiftsOrder(BotUser botUser, String date) {
         return new ValueRange()
                 .setValues(List.of(
-                        Arrays.asList(botUser.getUsername(),
+                        Arrays.asList("✖️",
+                                botUser.getUsername(),
                                 botUser.getTwitchGiftsCartString(),
                                 botUser.getCountry(),
                                 botUser.getAddress(),

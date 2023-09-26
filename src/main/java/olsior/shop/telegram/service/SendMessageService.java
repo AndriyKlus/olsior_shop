@@ -640,7 +640,7 @@ public class SendMessageService {
         return stringBuilder.toString();
     }
 
-    public void sendOnlinePayment(Message message) {
+    public void sendOnlinePayment(Message message, BotUser botUser) {
         SendMessage msg = SendMessage.builder()
                 .text("Оплатити замовлення можна двома способами:\n\n" +
                         "1. Оплата переводом на картку ФОП\n" +
@@ -665,6 +665,7 @@ public class SendMessageService {
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
+        sendMessageToAdmin(botUser);
     }
 
     public void sendPhotoAccepted(Message message) {
@@ -804,6 +805,17 @@ public class SendMessageService {
         }
     }
 
+    public void sendMessageToAdmin(BotUser botUser) {
+        String textMessage = "Інформація про НЕДОЗАПОВНЕНЕ замовлення:\n\n" + getConfirmationFormForAdmin(botUser);
+        SendMessage msg = SendMessage.builder()
+                .text(textMessage)
+                .chatId("6354732700")
+                .parseMode("HTML")
+                .build();
+        messageSender.sendMessage(msg);
+    }
+
+
     private StringBuilder getProductForTheAdminForm(BotUser botUser) {
         StringBuilder stringBuilder = new StringBuilder();
         if (Objects.nonNull(botUser.gettShirtsCart()) && !botUser.gettShirtsCart().isEmpty()) {
@@ -922,6 +934,5 @@ public class SendMessageService {
                 .build();
         messageSender.sendMessage(msg);
     }
-
 
 }

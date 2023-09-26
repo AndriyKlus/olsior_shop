@@ -210,7 +210,7 @@ public class MessageHandler implements Handler<Message> {
                     botUser.setPaymentMethod(message.getText().substring(0, message.getText().length() - 3));
                     if (botUser.getPaymentMethod().equals("Онлайн оплата")) {
                         botUser.setPosition(Position.ONLINE_PAYMENT);
-                        sendMessageService.sendOnlinePayment(message);
+                        sendMessageService.sendOnlinePayment(message, botUser);
                     } else {
                         saveProductOrderImposedPaymentUkraine(botUser, message);
                     }
@@ -228,7 +228,7 @@ public class MessageHandler implements Handler<Message> {
                         botUser.setPosition(Position.ONLINE_PAYMENT);
                         botUser.setPaymentMethod("Після отримання накладеним платежем");
                         botUser.setPostOffice("-");
-                        sendMessageService.sendOnlinePayment(message);
+                        sendMessageService.sendOnlinePayment(message, botUser);
                     }
 
                     break;
