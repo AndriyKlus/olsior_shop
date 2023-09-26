@@ -19,5 +19,7 @@ public enum Position {
     ONLINE_PAYMENT,
     PAYMENT_CONFIRMATION,
     PROBLEM,
+    USER_ID,
+    MESSAGE_TO_USER,
     NONE
 }

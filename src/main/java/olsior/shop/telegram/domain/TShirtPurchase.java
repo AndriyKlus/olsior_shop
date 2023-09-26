@@ -59,4 +59,9 @@ public class TShirtPurchase {
                 ", Розмір = " + size +
                 "\n";
     }
+
+    public String getStringForTable() {
+        return name +
+                ", Розмір = " + size;
+    }
 }

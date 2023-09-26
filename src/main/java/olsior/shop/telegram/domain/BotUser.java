@@ -19,6 +19,7 @@ public class BotUser {
     private String InfoAboutDelivery;
     private String paymentMethod;
     private boolean paymentConfirmation;
+    private Long userId;
 
     public String getUsername() {
         if(Objects.isNull(username))
@@ -144,6 +145,14 @@ public class BotUser {
 
     public void setPaymentConfirmation(boolean paymentConfirmation) {
         this.paymentConfirmation = paymentConfirmation;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getTwitchGiftsCartString() {

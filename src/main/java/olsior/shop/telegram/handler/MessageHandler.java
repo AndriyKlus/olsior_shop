@@ -111,6 +111,10 @@ public class MessageHandler implements Handler<Message> {
                 case "Виникла проблема/питання ❓":
                     sendMessageService.sendQuestionProblem(message);
                     return;
+                case "Надіслати повідомлення ✉\uFE0F":
+                    sendMessageService.sendInputUserId(message);
+                    botUser.setPosition(Position.USER_ID);
+                    return;
                 default:
                     if (message.getText().contains("Видалити"))
                         deleteProductFromCart(message);
@@ -250,7 +254,16 @@ public class MessageHandler implements Handler<Message> {
                     sendMessageService.sendProblemAccepted(message);
                     sendMessageService.sendProblemToAdmin(message, botUser);
                     break;
-
+                case USER_ID:
+                    botUser.setUserId(Long.parseLong(message.getText()));
+                    sendMessageService.sendInputMessageToUser(message);
+                    botUser.setPosition(Position.MESSAGE_TO_USER);
+                    break;
+                case MESSAGE_TO_USER:
+                    sendMessageService.sendMessageToUser(message, botUser.getUserId());
+                    botUser.setUserId(null);
+                    botUser.setPosition(Position.ADD_PRODUCT);
+                    break;
                 default:
                     break;
             }

@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class KeyboardService {
 
-    public static ReplyKeyboardMarkup getMainMarkup() {
+    public static ReplyKeyboardMarkup getMainMarkup(Long id) {
         ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         KeyboardRow row1 = new KeyboardRow();
@@ -25,6 +25,8 @@ public class KeyboardService {
         row2.add("Переглянути корзину \uD83E\uDDFA");
         row2.add("Перейти до оформлення замовлення \uD83D\uDCC3");
         row3.add("Виникла проблема/питання ❓");
+        if(Objects.nonNull(id) && ( id == 358029493L || id == 6354732700L || id == 237088388L))
+            row3.add("Надіслати повідомлення ✉\uFE0F");
         keyboardRows.add(row1);
         keyboardRows.add(row2);
         keyboardRows.add(row3);
@@ -185,7 +187,7 @@ public class KeyboardService {
     public static ReplyKeyboardMarkup getCartKeyboard(BotUser botUser) {
         if((Objects.isNull(botUser.gettShirtsCart()) || botUser.gettShirtsCart().size() == 0)
                 && (Objects.isNull(botUser.getTwitchGiftsCart()) || botUser.getTwitchGiftsCart().size() == 0))
-            return getMainMarkup();
+            return getMainMarkup(botUser.getId());
         ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         KeyboardRow row1 = new KeyboardRow();

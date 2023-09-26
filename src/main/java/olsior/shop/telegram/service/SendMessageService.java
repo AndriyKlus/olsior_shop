@@ -45,7 +45,7 @@ public class SendMessageService {
         SendMessage msg = SendMessage.builder()
                 .text("Привіт, тебе вітає Olsior Shop! Що хочеш замовити?")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .build();
         messageSender.sendMessage(msg);
     }
@@ -84,7 +84,7 @@ public class SendMessageService {
                 .photo(new InputFile("https://i.imgur.com/Hjdy0uU.jpg"))
                 .caption("Ми плануємо запуск магазину мерча в серпні, а поки що ти можеш замовити наші унікальні нагороди за бали каналу твіча")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .build();
         messageSender.sendPhoto(msg);
     }
@@ -232,7 +232,7 @@ public class SendMessageService {
         SendMessage msg = SendMessage.builder()
                 .text("Ок, ок, біжу")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .build();
         messageSender.sendMessage(msg);
     }
@@ -296,7 +296,7 @@ public class SendMessageService {
         SendMessage msg = SendMessage.builder()
                 .text("Отримання нагороди додано до кошика")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .build();
         messageSender.sendMessage(msg);
     }
@@ -305,7 +305,7 @@ public class SendMessageService {
         SendMessage msg = SendMessage.builder()
                 .text("На жаль ці предмети закінчились, вам буде повернуто бали")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .build();
         messageSender.sendMessage(msg);
     }
@@ -317,7 +317,7 @@ public class SendMessageService {
                         "\nПотрібно повнернути бали, якщо витрачені" +
                         "\nТвіч нікнейм: " + botUser.getTwitchNickname())
                 .chatId("6354732700")
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(botUser.getId()))
                 .build();
         messageSender.sendMessage(msg);
     }
@@ -361,7 +361,7 @@ public class SendMessageService {
         if ((Objects.isNull(botUser.gettShirtsCart()) || botUser.gettShirtsCart().size() == 0)
                 && (Objects.isNull(botUser.getTwitchGiftsCart()) || botUser.getTwitchGiftsCart().size() == 0)) {
             cartInfo = "У тебе поки немає товарів у корзині.";
-            replyKeyboardMarkup = getMainMarkup();
+            replyKeyboardMarkup = getMainMarkup(message.getChatId());
         } else {
             cartInfo = "Підтвердіть інформацію по вашому замволенню:\n\n" + getTextForCartInfo(botUser) + "+ вартість доставки за тарифами пошти.";
             replyKeyboardMarkup = getConfirmationCartKeyboard();
@@ -390,8 +390,16 @@ public class SendMessageService {
                 .text("Виникла проблема із функціоналом: @just_Andriy\n" +
                         "Виникло питання щодо замовлення чи доставки: @olsioriwe")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
+                .build();
+        messageSender.sendMessage(msg);
+    }
+
+    public void sendInputUserId(Message message) {
+        SendMessage msg = SendMessage.builder()
+                .text("Введіть id користувача")
+                .chatId(message.getChatId())
                 .build();
         messageSender.sendMessage(msg);
     }
@@ -520,7 +528,7 @@ public class SendMessageService {
         SendMessage msg = SendMessage.builder()
                 .text("Ваша заявка прийнята, коли товар зявиться із вами зв'яжуться.")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
@@ -568,7 +576,7 @@ public class SendMessageService {
         SendMessage msg = SendMessage.builder()
                 .text("Якщо у тебе щось не виходить з футболками/нагородами, напиши нам на аккаунт @olsiorshop, і ми допоможемо тобі розібратись")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
@@ -707,7 +715,7 @@ public class SendMessageService {
                         "\n" +
                         "Якщо у тебе є запитання стосовно вашого замовлення, пишіть на @olsiorshop")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
@@ -717,7 +725,7 @@ public class SendMessageService {
         SendMessage msg = SendMessage.builder()
                 .text("Виникла помилка із збереженням замовлення, спробуйте, будь ласка, пізніше.")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
@@ -732,7 +740,7 @@ public class SendMessageService {
                         "\n" +
                         "Якщо у тебе є запитання стосовно вашого замовлення, пишіть на @olsiorshop")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
@@ -747,7 +755,7 @@ public class SendMessageService {
                         "\n" +
                         "Якщо у тебе є запитання стосовно вашого замовлення, пишіть на @olsiorshop")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
@@ -762,7 +770,7 @@ public class SendMessageService {
                         "\n" +
                         "Якщо у тебе є запитання стосовно вашого замовлення, пишіть на @olsiorshop")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
@@ -777,8 +785,8 @@ public class SendMessageService {
                 SendDocument msg = SendDocument.builder()
                         .document(new InputFile(new File("receipt\\receipt_" + botUser.getId() + ".png")))
                         .caption(textMessage)
-                        .chatId("358029493")
-                        .replyMarkup(getMainMarkup())
+                        .chatId("6354732700")
+                        .replyMarkup(getMainMarkup(botUser.getId()))
                         .parseMode("HTML")
                         .build();
                 messageSender.sendDocument(msg);
@@ -789,7 +797,7 @@ public class SendMessageService {
                 SendMessage msg = SendMessage.builder()
                         .text(textMessage)
                         .chatId("6354732700")
-                        .replyMarkup(getMainMarkup())
+                        .replyMarkup(getMainMarkup(botUser.getId()))
                         .parseMode("HTML")
                         .build();
                 messageSender.sendMessage(msg);
@@ -798,7 +806,7 @@ public class SendMessageService {
             SendMessage msg = SendMessage.builder()
                     .text(textMessage)
                     .chatId("6354732700")
-                    .replyMarkup(getMainMarkup())
+                    .replyMarkup(getMainMarkup(botUser.getId()))
                     .parseMode("HTML")
                     .build();
             messageSender.sendMessage(msg);
@@ -902,10 +910,43 @@ public class SendMessageService {
         SendMessage msg = SendMessage.builder()
                 .text("Дякуємо за ваше звернення, з вами зв'яжуться найближчим часом")
                 .chatId(message.getChatId())
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
+    }
+
+    public void sendInputMessageToUser(Message message) {
+        SendMessage msg = SendMessage.builder()
+                .text("Введіть повідомлення для користувача")
+                .chatId(message.getChatId())
+                .build();
+        messageSender.sendMessage(msg);
+    }
+
+    public void sendMessageToUser(Message message, Long userId) {
+        try {
+            SendMessage msg = SendMessage.builder()
+                    .text(message.getText())
+                    .chatId(userId)
+                    .parseMode("HTML")
+                    .build();
+            messageSender.sendMessage(msg);
+            SendMessage msg2 = SendMessage.builder()
+                    .text("Повідомлення було надіслано.")
+                    .chatId(message.getChatId())
+                    .replyMarkup(getMainMarkup(message.getChatId()))
+                    .build();
+            messageSender.sendMessage(msg2);
+        } catch (Exception e) {
+            SendMessage msg = SendMessage.builder()
+                    .text("Виникла проблема з надсиланням, спробуйте знову.")
+                    .chatId(message.getChatId())
+                    .replyMarkup(getMainMarkup(message.getChatId()))
+                    .build();
+            messageSender.sendMessage(msg);
+        }
+
     }
 
     public void sendProblemToAdmin(Message message, BotUser botUser) {
@@ -919,7 +960,7 @@ public class SendMessageService {
         SendMessage msg = SendMessage.builder()
                 .text(stringBuilder)
                 .chatId("6354732700")
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
@@ -929,7 +970,7 @@ public class SendMessageService {
         SendMessage msg = SendMessage.builder()
                 .text("Футболка, на яку ви залишали заявку знову доступна у продажі, для замовлення пишіть на @olsiorshop або замовляйте у боті.")
                 .chatId(message.getText().substring(message.getText().indexOf(' ') + 1))
-                .replyMarkup(getMainMarkup())
+                .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
