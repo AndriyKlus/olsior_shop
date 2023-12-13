@@ -39,8 +39,8 @@ public class MessageHandler implements Handler<Message> {
                 case "Мерч Olsishop \uD83D\uDC55":
                 case "Продовжити покупки \uD83D\uDC55":
                     botUser.setPosition(Position.ADD_SHIRT);
-                    sendMessageService.sendTShirtsMessage(message);
                     sendMessageService.sendTShirtsProducts(message);
+                    sendMessageService.sendTShirtsMessage(message);
                     return;
                 case "Розмірна сітка \uD83D\uDCCF":
                     sendMessageService.sendSizeGridMessage(message);
@@ -127,7 +127,6 @@ public class MessageHandler implements Handler<Message> {
                     addTShirtToPurchase(message, botUser);
                     sendMessageService.sendMessageAboutSize(message);
                     break;
-
                 case SIZE:
                     saveItemToCart(message, botUser);
                     break;
