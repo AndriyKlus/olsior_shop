@@ -63,7 +63,7 @@ public class SendMessageService {
 
     public void sendTShirtsMessage(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Купляй ексклюзивні футболки від Olsior, поки вони не закінчилися \uD83D\uDC40")
+                .text("Купляй ексклюзивний мерч від Olsior, поки він ще не закінчився \uD83D\uDC40")
                 .chatId(message.getChatId())
                 .replyMarkup(getShirtsMarkup())
                 .build();
@@ -73,7 +73,7 @@ public class SendMessageService {
     public void sendSizeGridMessage(Message message) {
         SendPhoto msg = SendPhoto.builder()
                 .chatId(message.getChatId())
-                .photo(new InputFile("https://i.imgur.com/f349m2z.jpg"))
+                .photo(new InputFile("https://i.imgur.com/rfaleMP.png"))
                 .replyMarkup(getShirtsWithNoGridMarkup())
                 .build();
         messageSender.sendPhoto(msg);
@@ -98,11 +98,13 @@ public class SendMessageService {
                 medias.add(
                         InputMediaPhoto.builder()
                                 .media("attach://" + mediaName)
-                                .caption(tShirt.getName() + "\n\n" +
+                                .caption(tShirt.getName() + "" +
+                                        (tShirt.getName().contains("худі") ? "\nПЕРЕДЗАМОВЛЕННЯ ВІДКРИТО!\n" +
+                                                "Замовити худі можна вже зараз, але їх відправка буде здійснюватись після 20 грудня!\n\n" : "\n\n" ) +
                                         tShirt.getDescription() + "\n\n" +
                                         tShirt.getMaterial() + "\n\n" +
                                         "Ціна футболки: " + tShirt.getPrice() + " грн" + "\n" +
-                                        "*100 грн з кожної проданої футболки перераховуємо на ЗСУ")
+                                        tShirt.getAdditionalInfo())
                                 .mediaName(mediaName)
                                 .isNewMedia(true)
                                 .newMediaFile(new File(url))
@@ -132,8 +134,8 @@ public class SendMessageService {
 
     public void sendMessageAboutSize(Message message) {
         SendPhoto msg = SendPhoto.builder()
-                .caption("Оберіть розмір футболки")
-                .photo(new InputFile("https://i.imgur.com/f349m2z.jpg"))
+                .caption("Оберіть розмір")
+                .photo(new InputFile("https://i.imgur.com/rfaleMP.png"))
                 .chatId(message.getChatId())
                 .replyMarkup(getSizesKeyboard())
                 .build();
@@ -179,7 +181,7 @@ public class SendMessageService {
         StringBuilder stringBuilder = new StringBuilder();
 
         if (Objects.nonNull(botUser.gettShirtsCart()) && !botUser.gettShirtsCart().isEmpty()) {
-            stringBuilder.append("Товари до покупки:")
+            stringBuilder.append("Обрані товари:")
                     .append("\n\n");
             int w = 1;
             int price = 0;
@@ -187,7 +189,8 @@ public class SendMessageService {
                 stringBuilder.append(w++)
                         .append(". ")
                         .append(tShirt.getName())
-                        .append(tShirt.getMaterial())
+                        .append(tShirt.getName().contains("худі") ? "\nЦЕ ПЕРЕДЗАМОВЛЕННЯ: \n" +
+                                "відправка худі буде здійснятись після 20 грудня!" : "")
                         .append("\nРозмір: ")
                         .append(tShirt.getSize())
                         .append("\nЦіна: <b>")
@@ -650,12 +653,8 @@ public class SendMessageService {
 
     public void sendOnlinePayment(Message message, BotUser botUser) {
         SendMessage msg = SendMessage.builder()
-                .text("Оплатити замовлення можна двома способами:\n\n" +
-                        "1. Оплата переводом на картку ФОП\n" +
-                        "4035 2000 4217 4885\n" +
-                        "ФОП Звєрєва К. К,\n" +
+                .text("Реквізити рахунку ФОП:\n" +
                         "\n" +
-                        "2. Оплата на рахунок ФОП\n" +
                         "Одержувач\n" +
                         "ФОП Звєрєва Крістіна Костянтинівна\n" +
                         "IBAN\n" +
@@ -711,6 +710,9 @@ public class SendMessageService {
                 .text("Дякуємо за замовлення!\n" +
                         "\n" +
                         "Термін відправки: до 7 днів, термін доставки залежать від оператора.\n" +
+                        "\n" +
+                        "*Худі по передзамовленню будемо відправляти після 20 грудня!\n" +
+                        "\n" +
                         "Ми зв'яжемось з вами, якщо треба буде щось уточнити.\n" +
                         "\n" +
                         "Якщо у тебе є запитання стосовно вашого замовлення, пишіть на @olsiorshop")

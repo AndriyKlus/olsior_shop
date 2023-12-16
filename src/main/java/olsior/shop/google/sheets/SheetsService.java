@@ -2,7 +2,6 @@ package olsior.shop.google.sheets;
 
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
-import olsior.shop.telegram.db.TShirtDB;
 import olsior.shop.telegram.domain.BotUser;
 import olsior.shop.telegram.domain.TShirtPurchase;
 
@@ -122,9 +121,24 @@ public class SheetsService {
 
     private static List<String> getCellForShirt(String name, String size) {
         int point;
-        for ( point = 0; point < TShirtDB.getTShirts().size(); point++) {
-            if (name.equals(TShirtDB.getTShirts().get(point).getName()))
+        switch (name) {
+            case "Футболка «ЗРОЗ»":
+                point = 2;
                 break;
+            case "Футболка «Лагідна Українізація»":
+                point = 3;
+                break;
+            case "Футболка «Полапав і спить»":
+                point = 4;
+                break;
+            case "Оверсайз худі «Вірю, я повірив»":
+                point = 6;
+                break;
+            case "Оверсайз худі «Пасти твіча»":
+                point = 7;
+                break;
+            default:
+                point = 8;
         }
         String row = "";
         switch (size) {
@@ -137,7 +151,7 @@ public class SheetsService {
             case "L-XL":
                 row = "D";
         }
-        return List.of(row + (point + 2));
+        return List.of(row + (point));
     }
 
     private static List<String> getCellForGift(String name) {
@@ -278,6 +292,8 @@ public class SheetsService {
                                 botUser.getInfoAboutDelivery(),
                                 botUser.getPaymentMethod(),
                                 date,
+                                botUser.gettShirtsCart().stream().filter(item -> item.getName().contains("Футболка")).count(),
+                                botUser.gettShirtsCart().stream().filter(item -> item.getName().contains("худі")).count(),
                                 botUser.getId(),
                                 botUser.getPaymentConfirmation()
                         )));
