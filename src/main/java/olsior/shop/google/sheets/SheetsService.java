@@ -9,10 +9,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class SheetsService {
 
@@ -30,11 +27,13 @@ public class SheetsService {
     private static final String GIFTS_SPREADSHEET_ID = "1g0-y_HFWqHrh7Pve5v25DjZzL-iYtJzXEmPuTD5JItM";
     private static final String PRODUCTS_NUMBER_SPREADSHEET_ID = "1pk20M9Z9W5nceccsCuZVWEaQvIh61GaidCOYS5w2isE";
     private static final String PRODUCTS_APPLICATION_SPREADSHEETS_ID = "1P4STSJJo0b8Z5M5YQ5Q0Vs_THYeg_SJT4pyi6eYFfUk";
+    private static final String TABLE_GENERAL_SELLS = "Загальний продаж";
 
     public static boolean addProductsToSpreadSheets(BotUser botUser) {
         boolean result = true;
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
+        now = now.plusHours(2L);
         if (!botUser.gettShirtsCart().isEmpty()) {
             result = addProductOrder(botUser, dtf.format(now));
             if (!result)
@@ -119,6 +118,25 @@ public class SheetsService {
         }
     }
 
+    public static int getNumberOfSoldItems(String name) {
+        String ranges =  TABLE_GENERAL_SELLS + "!" + getCellForItem(name);
+        String readResult;
+        try {
+            readResult = (String) sheetsService.spreadsheets().values()
+                    .batchGet(PRODUCTS_SPREADSHEET_ID)
+                    .setRanges(Collections.singletonList(ranges))
+                    .execute()
+                    .getValueRanges()
+                    .get(0)
+                    .getValues()
+                    .get(0)
+                    .get(0);
+            return Integer.parseInt(readResult);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static List<String> getCellForShirt(String name, String size) {
         int point;
         switch (name) {
@@ -160,6 +178,22 @@ public class SheetsService {
         else if(name.equals("Наліпки зі смайлами каналу"))
             return List.of("B8");
         return List.of("C8");
+    }
+
+    private static String getCellForItem(String name) {
+        switch (name) {
+            case "Футболка «ЗРОЗ»":
+                return "B2";
+            case "Футболка «Лагідна Українізація»":
+                return "C2";
+            case "Футболка «Полапав і спить»":
+                return "D2";
+            case "Оверсайз худі «Вірю, я повірив»":
+                return "E2";
+            case "Оверсайз худі «Пасти твіча»":
+                return "F2";
+        }
+        return "G2";
     }
 
     private static List<String> getCellForSticker(String sticker) {
@@ -222,6 +256,23 @@ public class SheetsService {
         try {
             sheetsService.spreadsheets().values()
                     .update(PRODUCTS_NUMBER_SPREADSHEET_ID, cell.get(0), body)
+                    .setValueInputOption("USER_ENTERED")
+                    .setIncludeValuesInResponse(true)
+                    .execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void updateNumberOfShirts(String name) {
+        int numberOfItems = getNumberOfSoldItems(name);
+        String cell = TABLE_GENERAL_SELLS + "!" + getCellForItem(name);
+        ValueRange body = new ValueRange()
+                .setValues(List.of(
+                        List.of(numberOfItems + 1)));
+        try {
+            sheetsService.spreadsheets().values()
+                    .update(PRODUCTS_SPREADSHEET_ID, cell, body)
                     .setValueInputOption("USER_ENTERED")
                     .setIncludeValuesInResponse(true)
                     .execute();
