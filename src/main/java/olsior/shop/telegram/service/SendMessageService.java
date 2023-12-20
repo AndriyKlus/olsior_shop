@@ -8,6 +8,7 @@ import olsior.shop.telegram.domain.TShirtPurchase;
 import olsior.shop.telegram.domain.TwitchGift;
 import olsior.shop.telegram.messagesender.MessageSender;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
@@ -98,9 +99,7 @@ public class SendMessageService {
                 medias.add(
                         InputMediaPhoto.builder()
                                 .media("attach://" + mediaName)
-                                .caption(tShirt.getName() + "" +
-                                        (tShirt.getName().contains("худі") ? "\nПЕРЕДЗАМОВЛЕННЯ ВІДКРИТО!\n" +
-                                                "Замовити худі можна вже зараз, але їх відправка буде здійснюватись після 20 грудня!\n\n" : "\n\n" ) +
+                                .caption(tShirt.getName() + "\n\n" +
                                         tShirt.getDescription() + "\n\n" +
                                         tShirt.getMaterial() + "\n\n" +
                                         "Ціна футболки: " + tShirt.getPrice() + " грн" + "\n" +
@@ -134,7 +133,7 @@ public class SendMessageService {
 
     public void sendMessageAboutSize(Message message) {
         SendPhoto msg = SendPhoto.builder()
-                .caption("Оберіть розмір")
+                .caption("Обери розмір")
                 .photo(new InputFile("https://i.imgur.com/rfaleMP.png"))
                 .chatId(message.getChatId())
                 .replyMarkup(getSizesKeyboard())
@@ -153,7 +152,7 @@ public class SendMessageService {
 
     public void sendNoSizeForItem(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Нажаль цей розмір закінчився, ви можете обрати інший розмір, іншу футболку або залишити заявку на цей розмір і з вами зв'яжуться.")
+                .text("Нажаль цей розмір закінчився, ти можеш обрати інший розмір, іншу футболку або залишити заявку на цей розмір і з тобою зв'яжуться.")
                 .chatId(message.getChatId())
                 .replyMarkup(getNoSizeKeyboard())
                 .build();
@@ -189,8 +188,6 @@ public class SendMessageService {
                 stringBuilder.append(w++)
                         .append(". ")
                         .append(tShirt.getName())
-                        .append(tShirt.getName().contains("худі") ? "\nЦЕ ПЕРЕДЗАМОВЛЕННЯ: \n" +
-                                "відправка худі буде здійснятись після 20 грудня!" : "")
                         .append("\nРозмір: ")
                         .append(tShirt.getSize())
                         .append("\nЦіна: <b>")
@@ -306,7 +303,7 @@ public class SendMessageService {
 
     public void sendNoTwitchGift(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("На жаль ці предмети закінчились, вам буде повернуто бали")
+                .text("На жаль ці предмети закінчились, тобі буде повернуто бали")
                 .chatId(message.getChatId())
                 .replyMarkup(getMainMarkup(message.getChatId()))
                 .build();
@@ -317,7 +314,7 @@ public class SendMessageService {
         SendMessage msg = SendMessage.builder()
                 .text("Замовлення предемету за бали каналу:\n" +
                         botUser.getTwitchGiftsCart().get(botUser.getTwitchGiftsCart().size() - 1).getName() +
-                        "\nПотрібно повнернути бали, якщо витрачені" +
+                        "\nПотрібно повернути бали, якщо витрачені" +
                         "\nТвіч нікнейм: " + botUser.getTwitchNickname())
                 .chatId("6354732700")
                 .replyMarkup(getMainMarkup(botUser.getId()))
@@ -328,7 +325,7 @@ public class SendMessageService {
     public void sendChooseSticker(Message message, int number) {
         String text;
         if (number == 1) {
-            text = "Оберіть смайл для першого значка";
+            text = "Обери смайл для першого значка";
             SendPhoto msg = SendPhoto.builder()
                     .caption(text)
                     .photo(new InputFile("https://i.imgur.com/8m0qYc3.jpg"))
@@ -338,9 +335,9 @@ public class SendMessageService {
             messageSender.sendPhoto(msg);
             return;
         } else if (number == 2)
-            text = "Оберіть смайл для другого значка";
+            text = "Обери смайл для другого значка";
         else
-            text = "Оберіть смайл для третього значка";
+            text = "Обери смайл для третього значка";
         SendMessage msg = SendMessage.builder()
                 .text(text)
                 .chatId(message.getChatId())
@@ -351,7 +348,7 @@ public class SendMessageService {
 
     public void sendNoSticker(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("На жаль зараз немає цього значка, оберіть, будь ласка, інший.")
+                .text("На жаль зараз немає цього значка, обери, будь ласка, інший.")
                 .chatId(message.getChatId())
                 .replyMarkup(getChooseStickerMarkup())
                 .build();
@@ -366,7 +363,7 @@ public class SendMessageService {
             cartInfo = "У тебе поки немає товарів у корзині.";
             replyKeyboardMarkup = getMainMarkup(message.getChatId());
         } else {
-            cartInfo = "Підтвердіть інформацію по вашому замволенню:\n\n" + getTextForCartInfo(botUser) + "+ вартість доставки за тарифами пошти.";
+            cartInfo = "Підтверди інформацію по твоєму замволенню:\n\n" + getTextForCartInfo(botUser) + "+ вартість доставки за тарифами пошти.";
             replyKeyboardMarkup = getConfirmationCartKeyboard();
         }
         SendMessage msg = SendMessage.builder()
@@ -380,7 +377,7 @@ public class SendMessageService {
 
     public void sendChoosePlace(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Оберіть місце доставки")
+                .text("Обери місце доставки")
                 .chatId(message.getChatId())
                 .replyMarkup(getPlaceKeyboard())
                 .parseMode("HTML")
@@ -401,7 +398,7 @@ public class SendMessageService {
 
     public void sendInputUserId(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Введіть id користувача")
+                .text("Введи id користувача")
                 .chatId(message.getChatId())
                 .build();
         messageSender.sendMessage(msg);
@@ -409,7 +406,7 @@ public class SendMessageService {
 
     public void sendProblem(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Опишіть вашу проблему")
+                .text("Опиши твою проблему")
                 .chatId(message.getChatId())
                 .replyMarkup(getBackKeyboard())
                 .parseMode("HTML")
@@ -419,7 +416,7 @@ public class SendMessageService {
 
     public void sendInfo(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Напишіть свій коментар")
+                .text("Напиши свій коментар")
                 .chatId(message.getChatId())
                 .replyMarkup(getBackKeyboard())
                 .parseMode("HTML")
@@ -439,7 +436,7 @@ public class SendMessageService {
 
     public void sendInputFullName(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Введіть свій ПІБ")
+                .text("Введи свій ПІБ")
                 .chatId(message.getChatId())
                 .replyMarkup(getBackKeyboard())
                 .parseMode("HTML")
@@ -449,7 +446,7 @@ public class SendMessageService {
 
     public void sendInputFullNameEng(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Введіть свій ПІБ (англійською мовою)")
+                .text("Введи свій ПІБ (англійською мовою)")
                 .chatId(message.getChatId())
                 .replyMarkup(getBackKeyboard())
                 .parseMode("HTML")
@@ -459,7 +456,7 @@ public class SendMessageService {
 
     public void sendInputCity(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Введіть місто та область доставки")
+                .text("Введи місто та область доставки")
                 .chatId(message.getChatId())
                 .replyMarkup(getBackKeyboard())
                 .parseMode("HTML")
@@ -469,9 +466,37 @@ public class SendMessageService {
 
     public void sendInputCountry(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Введіть країну доставки\n* Відправляємо Укрпоштою в ті країни, в які вона доставляє. Доставки в росію та білорусь немає.")
+                .text("Введи країну доставки")
                 .chatId(message.getChatId())
                 .replyMarkup(getBackKeyboard())
+                .parseMode("HTML")
+                .build();
+        messageSender.sendMessage(msg);
+    }
+
+    public void sendConfirmPayment(Message message) {
+        SendMessage msg = SendMessage.builder()
+                .text("❗\uFE0FВажливо:\n" +
+                        "Оскільки відправку міжнародної посилки можна здійснити тільки за умовою оплати доставки відправником, ми попросимо тебе <b>оплатити суму доставки</b> разом з оплатою замовлення. \n" +
+                        "\n" +
+                        "Вартість доставки можна розрахувати на сайтах Укрпошти або Nova Post. \n" +
+                        "\n" +
+                        "Якщо ти не знаєш вартість доставки, напиши нам і ми тобі допоможемо\uD83D\uDC49 @olsiorshop")
+                .chatId(message.getChatId())
+                .replyMarkup(getPaymentKeyboard())
+                .parseMode("HTML")
+                .build();
+        messageSender.sendMessage(msg);
+    }
+
+    public void sendChooseDeliveryMethod(Message message) {
+        SendMessage msg = SendMessage.builder()
+                .text("❇\uFE0FЯкщо в твоїй країні працює Nova Post — це найзручніший спосіб доставки.\n" +
+                        "Знайди на сайті https://novapost.com/ua найближче до тебе відділення і напиши його номер та адресу в наступних кроках. \n" +
+                        "\n" +
+                        "❇\uFE0FУ всі інші країни (окрім росії та білорусі) відправляємо УкрПоштою. Якщо це твій випадок, то вкажи далі свою адресу та зверни увагу на правильність поштового індексу.")
+                .chatId(message.getChatId())
+                .replyMarkup(getChooseDeliveryKeyboard())
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
@@ -479,7 +504,7 @@ public class SendMessageService {
 
     public void sendInputPostOffice(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Введіть номер відділення нової пошти")
+                .text("Введи номер відділення нової пошти")
                 .chatId(message.getChatId())
                 .replyMarkup(getBackKeyboard())
                 .parseMode("HTML")
@@ -487,9 +512,19 @@ public class SendMessageService {
         messageSender.sendMessage(msg);
     }
 
-    public void sendInputAddress(Message message) {
+    public void sendInputAddressForUkrPost(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Введіть повну адресу та індекс (анлійською мовою)")
+                .text("Введи повну адресу та індекс (анлійською мовою)")
+                .chatId(message.getChatId())
+                .replyMarkup(getBackKeyboard())
+                .parseMode("HTML")
+                .build();
+        messageSender.sendMessage(msg);
+    }
+
+    public void sendInputAddressForNovaPost(Message message) {
+        SendMessage msg = SendMessage.builder()
+                .text("Введи номер та адресу відділення (анлійською мовою)")
                 .chatId(message.getChatId())
                 .replyMarkup(getBackKeyboard())
                 .parseMode("HTML")
@@ -499,7 +534,7 @@ public class SendMessageService {
 
     public void sendInputPhoneNumber(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Введіть свій номер телефону")
+                .text("Введи свій номер телефону")
                 .chatId(message.getChatId())
                 .replyMarkup(getPhoneNumberKeyboard())
                 .parseMode("HTML")
@@ -509,7 +544,7 @@ public class SendMessageService {
 
     public void sendInputQuestions(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Якщо у тебе є додаткові побажання по доставці чи питання, напишіть їх")
+                .text("Якщо у тебе є додаткові побажання по доставці чи питання, напиши їх")
                 .chatId(message.getChatId())
                 .replyMarkup(getQuestionsKeyboard())
                 .parseMode("HTML")
@@ -519,7 +554,7 @@ public class SendMessageService {
 
     public void sendChoosePaymentMethod(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Оберіть спосіб оплати з трьох доступних варіантів\uD83D\uDC47\n" +
+                .text("Обери спосіб оплати з трьох доступних варіантів\uD83D\uDC47\n" +
                         "\n" +
                         "<b>1. Оплата після отримання накладеним платежем:</b>\n" +
                         "Ми відправляємо тобі покупку новою поштою, а перед тим як її забрати ти сплачуєш за неї суму з урахуванням комісії нової пошти.\n" +
@@ -538,7 +573,7 @@ public class SendMessageService {
 
     public void sendApplicationAccepted(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Ваша заявка прийнята, коли товар зявиться із вами зв'яжуться.")
+                .text("Твоя заявка прийнята, коли товар зявиться із тобою зв'яжуться.")
                 .chatId(message.getChatId())
                 .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
@@ -594,6 +629,16 @@ public class SendMessageService {
         messageSender.sendMessage(msg);
     }
 
+    public void sendInputEmail(Message message) {
+        SendMessage msg = SendMessage.builder()
+                .text("Введи свою електронну пошту")
+                .chatId(message.getChatId())
+                .replyMarkup(getBackKeyboardHelp())
+                .parseMode("HTML")
+                .build();
+        messageSender.sendMessage(msg);
+    }
+
 
     public void sendConfirmationForm(BotUser botUser, Message message) {
         String form = getConfirmationForm(botUser);
@@ -609,7 +654,7 @@ public class SendMessageService {
     public void sendConfirmationFormForGifts(BotUser botUser, Message message) {
         String form = getConfirmationForm(botUser);
         SendMessage msg = SendMessage.builder()
-                .text("Підтвердіть інформацію:\n\n" + form)
+                .text("Підтверди інформацію:\n\n" + form)
                 .chatId(message.getChatId())
                 .replyMarkup(getConfirmationGiftKeyboard())
                 .parseMode("HTML")
@@ -628,13 +673,11 @@ public class SendMessageService {
 
     private String getConfirmationForm(BotUser botUser) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Підтвердіть правильність ваших даних для відправки:")
+        stringBuilder.append("Підтверди правильність ваших даних для відправки:")
                 .append("\n\nПІБ: <b>")
                 .append(botUser.getFullName())
                 .append("</b>\nКраїна: <b>")
                 .append(botUser.getCountry())
-                .append("</b>\nАдреса: <b>")
-                .append(botUser.getAddress())
                 .append("</b>");
 
         if (Objects.nonNull(botUser.getPostOffice())) {
@@ -650,6 +693,11 @@ public class SendMessageService {
         stringBuilder.append("\nНомер телефону: <b>")
                 .append(botUser.getPhoneNumber())
                 .append("</b>");
+
+        if(Strings.isNotEmpty(botUser.getEmail()))
+            stringBuilder.append("\nEmail: <b>")
+                    .append(botUser.getEmail())
+                    .append("</b>");
 
         if (Objects.nonNull(botUser.getInfoAboutDelivery()))
             stringBuilder.append("\nДодаткові побажання: ")
@@ -706,7 +754,7 @@ public class SendMessageService {
         }
 
         SendMessage msg = SendMessage.builder()
-                .text("Квитанція збережена.\nЧи потрібно з вами зв‘язатися для підтвердження замовлення?")
+                .text("Квитанція збережена.\nЧи потрібно з тобою зв‘язатися для підтвердження замовлення?")
                 .chatId(message.getChatId())
                 .replyMarkup(confirmingReceiptKeyboard())
                 .parseMode("HTML")
@@ -720,9 +768,7 @@ public class SendMessageService {
                         "\n" +
                         "Термін відправки: до 7 днів, термін доставки залежать від оператора.\n" +
                         "\n" +
-                        "*Худі по передзамовленню будемо відправляти після 20 грудня!\n" +
-                        "\n" +
-                        "Ми зв'яжемось з вами, якщо треба буде щось уточнити.\n" +
+                        "Ми зв'яжемось з тобою, якщо треба буде щось уточнити.\n" +
                         "\n" +
                         "Якщо у тебе є запитання стосовно вашого замовлення, пишіть на @olsiorshop")
                 .chatId(message.getChatId())
@@ -734,7 +780,7 @@ public class SendMessageService {
 
     public void sendOnlinePayment(Message message, String url) {
         SendMessage msg = SendMessage.builder()
-                .text("Для оплати перейдіть по цьому посиланню: " + url + "\n" +
+                .text("Для оплати перейди по цьому посиланню: " + url + "\n" +
                         "\n" +
                         "Але після оплати не забудь повернутись в цей чат та підтвердити оплату в меню бота\uD83D\uDC4C")
                 .chatId(message.getChatId())
@@ -746,7 +792,7 @@ public class SendMessageService {
 
     public void sendWrongAddingOrder(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Виникла помилка із збереженням замовлення, спробуйте, будь ласка, пізніше.")
+                .text("Виникла помилка із збереженням замовлення, спробуй, будь ласка, пізніше.")
                 .chatId(message.getChatId())
                 .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
@@ -759,7 +805,7 @@ public class SendMessageService {
                 .text("Дякуємо за замовлення!\n" +
                         "\n" +
                         "Термін відправки: до 7 днів, термін доставки залежать від оператора.\n" +
-                        "Ми зв'яжемось з вами, якщо треба буде щось уточнити.\n" +
+                        "Ми зв'яжемось з тобою, якщо треба буде щось уточнити.\n" +
                         "\n" +
                         "Якщо у тебе є запитання стосовно вашого замовлення, пишіть на @olsiorshop")
                 .chatId(message.getChatId())
@@ -774,7 +820,7 @@ public class SendMessageService {
                 .text("Дякуємо за замовлення!\n" +
                         "\n" +
                         "Термін відправки: до 7 днів, термін доставки залежать від оператора.\n" +
-                        "Ми зв'яжемось з вами, якщо треба буде щось уточнити.\n" +
+                        "Ми зв'яжемось з тобою, якщо треба буде щось уточнити.\n" +
                         "\n" +
                         "Якщо у тебе є запитання стосовно вашого замовлення, пишіть на @olsiorshop")
                 .chatId(message.getChatId())
@@ -789,7 +835,7 @@ public class SendMessageService {
                 .text("Дякуємо за замовлення!\n" +
                         "\n" +
                         "Термін відправки: до 7 днів, термін доставки залежать від оператора.\n" +
-                        "Ми зв'яжемось з вами, якщо треба буде щось уточнити.\n" +
+                        "Ми зв'яжемось з тобою, якщо треба буде щось уточнити.\n" +
                         "\n" +
                         "Якщо у тебе є запитання стосовно вашого замовлення, пишіть на @olsiorshop")
                 .chatId(message.getChatId())
@@ -912,10 +958,6 @@ public class SendMessageService {
             stringBuilder.append("\nВідділення нової пошти: <b>")
                     .append(botUser.getPostOffice())
                     .append("</b>");
-        } else {
-            stringBuilder.append("\nАдреса: <b>")
-                    .append(botUser.getAddress())
-                    .append("</b>");
         }
 
         stringBuilder.append("\nНомер телефону: <b>")
@@ -931,7 +973,7 @@ public class SendMessageService {
 
     public void sendProblemAccepted(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Дякуємо за ваше звернення, з вами зв'яжуться найближчим часом")
+                .text("Дякуємо за звернення, з тобою зв'яжуться найближчим часом")
                 .chatId(message.getChatId())
                 .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")
@@ -941,7 +983,7 @@ public class SendMessageService {
 
     public void sendInputMessageToUser(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Введіть повідомлення для користувача")
+                .text("Введи повідомлення для користувача")
                 .chatId(message.getChatId())
                 .build();
         messageSender.sendMessage(msg);
@@ -991,7 +1033,7 @@ public class SendMessageService {
 
     public void sendNotifyToUser(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Футболка, на яку ви залишали заявку знову доступна у продажі, для замовлення пишіть на @olsiorshop або замовляйте у боті.")
+                .text("Футболка, на яку залишено заявку знову доступна у продажі, для замовлення пишіть на @olsiorshop або замовляйте у боті.")
                 .chatId(message.getText().substring(message.getText().indexOf(' ') + 1))
                 .replyMarkup(getMainMarkup(message.getChatId()))
                 .parseMode("HTML")

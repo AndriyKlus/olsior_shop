@@ -1,8 +1,11 @@
 package olsior.shop.telegram.domain;
 
+import lombok.Data;
+
 import java.util.List;
 import java.util.Objects;
 
+@Data
 public class BotUser {
     private Long id;
     private String username;
@@ -11,6 +14,8 @@ public class BotUser {
     private List<TwitchGift> twitchGiftsCart;
     private List<TShirtPurchase> tShirtsCart;
     private String twitchNickname;
+    private String deliveryMethod;
+    private String email;
     private String country;
     private String fullName;
     private String postOffice;

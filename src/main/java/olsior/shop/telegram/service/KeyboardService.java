@@ -268,6 +268,39 @@ public class KeyboardService {
         return markup;
     }
 
+    public static ReplyKeyboardMarkup getChooseDeliveryKeyboard() {
+        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow row1 = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+        row1.add("Nova Post \uD83D\uDCEE");
+        row1.add("Укрпошта \uD83C\uDFE3");
+        row2.add("Допомога ❔");
+        row2.add("Повернутись до вибору товару ◀️");
+        keyboardRows.add(row1);
+        keyboardRows.add(row2);
+        markup.setKeyboard(keyboardRows);
+        markup.setResizeKeyboard(true);
+
+        return markup;
+    }
+
+    public static ReplyKeyboardMarkup getPaymentKeyboard() {
+        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow row1 = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+        row1.add("Оплата \uD83D\uDCB3");
+        row1.add("Допомога ❔");
+        row2.add("Повернутись до вибору товару ◀️");
+        keyboardRows.add(row1);
+        keyboardRows.add(row2);
+        markup.setKeyboard(keyboardRows);
+        markup.setResizeKeyboard(true);
+
+        return markup;
+    }
+
     public static ReplyKeyboardMarkup getBackKeyboardHelp() {
         ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();

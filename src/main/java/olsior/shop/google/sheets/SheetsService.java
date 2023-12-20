@@ -4,6 +4,7 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
 import olsior.shop.telegram.domain.BotUser;
 import olsior.shop.telegram.domain.TShirtPurchase;
+import org.apache.logging.log4j.util.Strings;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -354,6 +355,7 @@ public class SheetsService {
                                 botUser.getAddress(),
                                 botUser.getPostOffice(),
                                 botUser.getPhoneNumber(),
+                                Strings.isEmpty(botUser.getEmail()) ? "-" : botUser.getEmail(),
                                 botUser.getInfoAboutDelivery(),
                                 botUser.getPaymentMethod(),
                                 date,

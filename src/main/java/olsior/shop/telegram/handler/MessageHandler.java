@@ -159,9 +159,21 @@ public class MessageHandler implements Handler<Message> {
                         sendMessageService.sendInputFullName(message);
                     } else if (message.getText().equals("По світу \uD83C\uDF0D")) {
                         botUser.setCountry("Abroad");
-                        botUser.setPosition(Position.COUNTRY);
-                        sendMessageService.sendInputCountry(message);
+                        botUser.setPosition(Position.DELIVERY);
+                        sendMessageService.sendChooseDeliveryMethod(message);
                     }
+                    break;
+
+                case DELIVERY:
+                    botUser.setDeliveryMethod(message.getText().substring(0, message.getText().length() - 3));
+                    botUser.setPosition(Position.COUNTRY);
+                    sendMessageService.sendInputCountry(message);
+                    break;
+
+                case COUNTRY:
+                    botUser.setCountry(message.getText());
+                    botUser.setPosition(Position.FULL_NAME);
+                    sendMessageService.sendInputFullNameEng(message);
                     break;
 
                 case FULL_NAME:
@@ -171,15 +183,14 @@ public class MessageHandler implements Handler<Message> {
                         sendMessageService.sendInputCity(message);
                     } else {
                         botUser.setPosition(Position.ADDRESS);
-                        sendMessageService.sendInputAddress(message);
+                        if(botUser.getDeliveryMethod().equals("Nova Post")) {
+                            sendMessageService.sendInputAddressForNovaPost(message);
+                        } else {
+                            sendMessageService.sendInputAddressForUkrPost(message);
+                        }
                     }
                     break;
 
-                case COUNTRY:
-                    botUser.setCountry(message.getText());
-                    botUser.setPosition(Position.FULL_NAME);
-                    sendMessageService.sendInputFullNameEng(message);
-                    break;
 
                 case ADDRESS:
                     botUser.setAddress(message.getText());
@@ -200,6 +211,17 @@ public class MessageHandler implements Handler<Message> {
 
                 case PHONE_NUMBER:
                     botUser.setPhoneNumber(message.getText());
+                    if(botUser.getDeliveryMethod().equals("Nova Post")) {
+                        botUser.setPosition(Position.EMAIL);
+                        sendMessageService.sendInputEmail(message);
+                    } else {
+                        botUser.setPosition(Position.CONFIRMATION);
+                        sendMessageService.sendConfirmationForm(botUser, message);
+                    }
+                    break;
+
+                case EMAIL:
+                    botUser.setEmail(message.getText());
                     botUser.setPosition(Position.CONFIRMATION);
                     sendMessageService.sendConfirmationForm(botUser, message);
                     break;
@@ -226,8 +248,6 @@ public class MessageHandler implements Handler<Message> {
                             String url = sendRequestForInvoice(botUser.gettShirtsCart());
                             sendMessageService.sendOnlinePayment(message, url);
                             break;
-
-
                     }
                     break;
 
@@ -244,12 +264,17 @@ public class MessageHandler implements Handler<Message> {
                         saveGiftOrder(botUser, message);
                     }
                     if (!botUser.getCountry().equals(UKRAINE)) {
-                        botUser.setPosition(Position.FOP_PAYMENT);
-                        botUser.setPaymentMethod("Після отримання накладеним платежем");
-                        botUser.setPostOffice("-");
-                        sendMessageService.sendOnlinePayment(message, botUser);
+                        botUser.setPosition(Position.PAYMENT_CONFIRM);
+                        sendMessageService.sendConfirmPayment(message);
                     }
 
+                    break;
+
+                case PAYMENT_CONFIRM:
+                    botUser.setPosition(Position.FOP_PAYMENT);
+                    botUser.setPaymentMethod("Оплата на рахунок ФОП");
+                    botUser.setPostOffice("-");
+                    sendMessageService.sendOnlinePayment(message, botUser);
                     break;
 
                 case FOP_PAYMENT:
@@ -290,8 +315,13 @@ public class MessageHandler implements Handler<Message> {
         } else if (message.hasContact()) {
             BotUser botUser = findBotUserOrCreate(message);
             botUser.setPhoneNumber(message.getContact().getPhoneNumber());
-            botUser.setPosition(Position.CONFIRMATION);
-            sendMessageService.sendConfirmationForm(botUser, message);
+            if(botUser.getDeliveryMethod().equals("Nova Post")) {
+                botUser.setPosition(Position.EMAIL);
+                sendMessageService.sendInputEmail(message);
+            } else {
+                botUser.setPosition(Position.CONFIRMATION);
+                sendMessageService.sendConfirmationForm(botUser, message);
+            }
         } else if (message.hasPhoto() || message.hasDocument()) {
             processReceipt(message);
         }
@@ -380,6 +410,8 @@ public class MessageHandler implements Handler<Message> {
         botUser.settShirtPurchase(null);
         botUser.setPaymentMethod(null);
         botUser.setPaymentConfirmation(false);
+        botUser.setEmail(null);
+        botUser.setDeliveryMethod(null);
     }
 
     private void saveProductOrderWithNoOnlineConfirmation(BotUser botUser, Message message) {
