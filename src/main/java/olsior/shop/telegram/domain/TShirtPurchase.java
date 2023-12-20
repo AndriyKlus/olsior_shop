@@ -1,15 +1,20 @@
 package olsior.shop.telegram.domain;
 
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class TShirtPurchase {
 
+    private Long id;
     private String name;
     private int price;
     private String material;
     private String size;
     private List<String> photoUrls;
+    private String imgUrl;
 
     public String getName() {
         return name;
@@ -49,6 +54,14 @@ public class TShirtPurchase {
 
     public void setPhotoUrls(List<String> photoUrls) {
         this.photoUrls = photoUrls;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
     @Override

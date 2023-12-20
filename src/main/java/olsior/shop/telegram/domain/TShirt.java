@@ -1,26 +1,23 @@
 package olsior.shop.telegram.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.List;
 
+@AllArgsConstructor
+@Data
 public class TShirt {
 
+    private final Long id;
     private final String name;
     private final int price;
     private final String material;
     private final String description;
     private final List<String> sizes;
     private final List<String> urls;
+    private final String imgUrl;
     private final String additionalInfo;
-
-    public TShirt(String name, int price, String material, String description, List<String> sizes, List<String> urls, String additionalInfo) {
-        this.name = name;
-        this.price = price;
-        this.material = material;
-        this.description = description;
-        this.sizes = sizes;
-        this.urls = urls;
-        this.additionalInfo = additionalInfo;
-    }
 
     public String getName() {
         return name;

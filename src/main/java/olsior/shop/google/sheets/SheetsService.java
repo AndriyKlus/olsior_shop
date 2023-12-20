@@ -118,8 +118,8 @@ public class SheetsService {
         }
     }
 
-    public static int getNumberOfSoldItems(String name) {
-        String ranges =  TABLE_GENERAL_SELLS + "!" + getCellForItem(name);
+    public static int getNumberOfSoldItems(String name, String size) {
+        String ranges =  TABLE_GENERAL_SELLS + "!" + getCellForItem(name, size);
         String readResult;
         try {
             readResult = (String) sheetsService.spreadsheets().values()
@@ -180,20 +180,34 @@ public class SheetsService {
         return List.of("C8");
     }
 
-    private static String getCellForItem(String name) {
+    private static String getCellForItem(String name, String size) {
+        int point = 0;
         switch (name) {
             case "Футболка «ЗРОЗ»":
-                return "B2";
+                point = 2;
+                break;
             case "Футболка «Лагідна Українізація»":
-                return "C2";
+                point = 7;
+                break;
             case "Футболка «Полапав і спить»":
-                return "D2";
+                point = 12;
+                break;
             case "Оверсайз худі «Вірю, я повірив»":
-                return "E2";
+                point = 17;
+                break;
             case "Оверсайз худі «Пасти твіча»":
-                return "F2";
+                point = 22;
+                break;
         }
-        return "G2";
+        switch (size) {
+            case "S-M":
+                point = point + 1;
+                break;
+            case "L-XL":
+                point = point + 2;
+                break;
+        }
+        return "C" + point;
     }
 
     private static List<String> getCellForSticker(String sticker) {
@@ -264,9 +278,9 @@ public class SheetsService {
         }
     }
 
-    public static void updateNumberOfShirts(String name) {
-        int numberOfItems = getNumberOfSoldItems(name);
-        String cell = TABLE_GENERAL_SELLS + "!" + getCellForItem(name);
+    public static void updateNumberOfSoldShirts(String name, String size) {
+        int numberOfItems = getNumberOfSoldItems(name, size);
+        String cell = TABLE_GENERAL_SELLS + "!" + getCellForItem(name, size);
         ValueRange body = new ValueRange()
                 .setValues(List.of(
                         List.of(numberOfItems + 1)));

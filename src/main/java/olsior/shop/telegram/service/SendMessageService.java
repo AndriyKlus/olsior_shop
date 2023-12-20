@@ -519,7 +519,16 @@ public class SendMessageService {
 
     public void sendChoosePaymentMethod(Message message) {
         SendMessage msg = SendMessage.builder()
-                .text("Оберіть спосіб оплати")
+                .text("Оберіть спосіб оплати з трьох доступних варіантів\uD83D\uDC47\n" +
+                        "\n" +
+                        "<b>1. Оплата після отримання накладеним платежем:</b>\n" +
+                        "Ми відправляємо тобі покупку новою поштою, а перед тим як її забрати ти сплачуєш за неї суму з урахуванням комісії нової пошти.\n" +
+                        "\n" +
+                        "<b>2. Оплата на рахунок ФОП:</b>\n" +
+                        "Ми даємо тобі реквізити на оплату, які ти вводиш у своєму мобільному банку і перераховуєш гроші на наш рахунок ФОП\n" +
+                        "\n" +
+                        "<b>3. Онлайн-оплата:</b>\n" +
+                        "Ти переходиш по спеціальному посиланню, яке згенерував нам чудовий монобанк і там в два кліка проводиш оплату обраних товарів\uD83D\uDC4C")
                 .chatId(message.getChatId())
                 .replyMarkup(getPaymentMethodKeyboard())
                 .parseMode("HTML")
@@ -723,6 +732,18 @@ public class SendMessageService {
         messageSender.sendMessage(msg);
     }
 
+    public void sendOnlinePayment(Message message, String url) {
+        SendMessage msg = SendMessage.builder()
+                .text("Для оплати перейдіть по цьому посиланню: " + url + "\n" +
+                        "\n" +
+                        "Але після оплати не забудь повернутись в цей чат та підтвердити оплату в меню бота\uD83D\uDC4C")
+                .chatId(message.getChatId())
+                .replyMarkup(getPaymentConfirmationKeyboard())
+                .parseMode("HTML")
+                .build();
+        messageSender.sendMessage(msg);
+    }
+
     public void sendWrongAddingOrder(Message message) {
         SendMessage msg = SendMessage.builder()
                 .text("Виникла помилка із збереженням замовлення, спробуйте, будь ласка, пізніше.")
@@ -748,7 +769,7 @@ public class SendMessageService {
         messageSender.sendMessage(msg);
     }
 
-    public void sendOnlinePaymentWithConfirmation(Message message) {
+    public void sendOnlinePaymentConfirmation(Message message) {
         SendMessage msg = SendMessage.builder()
                 .text("Дякуємо за замовлення!\n" +
                         "\n" +

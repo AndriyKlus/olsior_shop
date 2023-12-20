@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.*;
 
 import static olsior.shop.google.sheets.SheetsService.*;
+import static olsior.shop.mono.service.MonoService.sendRequestForInvoice;
 
 @Component
 public class MessageHandler implements Handler<Message> {
@@ -210,13 +211,28 @@ public class MessageHandler implements Handler<Message> {
                     break;
 
                 case PAYMENT_METHOD:
+
                     botUser.setPaymentMethod(message.getText().substring(0, message.getText().length() - 3));
-                    if (botUser.getPaymentMethod().equals("Онлайн оплата")) {
-                        botUser.setPosition(Position.ONLINE_PAYMENT);
-                        sendMessageService.sendOnlinePayment(message, botUser);
-                    } else {
-                        saveProductOrderImposedPaymentUkraine(botUser, message);
+                    switch (botUser.getPaymentMethod()) {
+                        case "Після отримання накладеним платежем":
+                            saveProductOrderImposedPaymentUkraine(botUser, message);
+                            break;
+                        case "Оплата на рахунок ФОП":
+                            botUser.setPosition(Position.FOP_PAYMENT);
+                            sendMessageService.sendOnlinePayment(message, botUser);
+                            break;
+                        case "Онлайн оплата":
+                            botUser.setPosition(Position.ONLINE_PAYMENT);
+                            String url = sendRequestForInvoice(botUser.gettShirtsCart());
+                            sendMessageService.sendOnlinePayment(message, url);
+                            break;
+
+
                     }
+                    break;
+
+                case ONLINE_PAYMENT:
+                    saveProductOrderWithOnlinePayment(botUser, message);
                     break;
 
                 case CONFIRMATION:
@@ -228,7 +244,7 @@ public class MessageHandler implements Handler<Message> {
                         saveGiftOrder(botUser, message);
                     }
                     if (!botUser.getCountry().equals(UKRAINE)) {
-                        botUser.setPosition(Position.ONLINE_PAYMENT);
+                        botUser.setPosition(Position.FOP_PAYMENT);
                         botUser.setPaymentMethod("Після отримання накладеним платежем");
                         botUser.setPostOffice("-");
                         sendMessageService.sendOnlinePayment(message, botUser);
@@ -236,7 +252,7 @@ public class MessageHandler implements Handler<Message> {
 
                     break;
 
-                case ONLINE_PAYMENT:
+                case FOP_PAYMENT:
                     sendMessageService.sendWaitingForReceipt(message);
                     break;
 
@@ -292,7 +308,9 @@ public class MessageHandler implements Handler<Message> {
         tShirtPurchase.setName(tShirt.getName());
         tShirtPurchase.setMaterial(tShirt.getMaterial());
         tShirtPurchase.setPrice(tShirt.getPrice());
-        tShirtPurchase.setPhotoUrls(tShirtPurchase.getPhotoUrls());
+        tShirtPurchase.setPhotoUrls(tShirt.getUrls());
+        tShirtPurchase.setImgUrl(tShirt.getImgUrl());
+        tShirtPurchase.setId(tShirt.getId());
 
         botUser.settShirtPurchase(tShirtPurchase);
         botUser.setPosition(Position.SIZE);
@@ -344,7 +362,7 @@ public class MessageHandler implements Handler<Message> {
 
     private void processReceipt(Message message) {
         BotUser botUser = findBotUserOrCreate(message);
-        if (botUser.getPosition().equals(Position.ONLINE_PAYMENT)) {
+        if (botUser.getPosition().equals(Position.FOP_PAYMENT)) {
             try {
                 sendMessageService.sendPhotoAccepted(message);
                 botUser.setPosition(Position.PAYMENT_CONFIRMATION);
@@ -378,7 +396,18 @@ public class MessageHandler implements Handler<Message> {
     private void saveProductOrderWithOnlineConfirmation(BotUser botUser, Message message) {
         botUser.setPaymentConfirmation(true);
         if (updateNumberOfItems(botUser) && addProductsToSpreadSheets(botUser)) {
-            sendMessageService.sendOnlinePaymentWithConfirmation(message);
+            sendMessageService.sendOnlinePaymentConfirmation(message);
+            sendMessageService.sendMessageToAdmin(botUser, true);
+            clearCart(botUser);
+        } else {
+            sendMessageService.sendWrongAddingOrder(message);
+        }
+        botUser.setPosition(Position.ADD_PRODUCT);
+    }
+
+    private void saveProductOrderWithOnlinePayment(BotUser botUser, Message message) {
+        if (updateNumberOfItems(botUser) && addProductsToSpreadSheets(botUser)) {
+            sendMessageService.sendOnlinePaymentConfirmation(message);
             sendMessageService.sendMessageToAdmin(botUser, true);
             clearCart(botUser);
         } else {
@@ -423,6 +452,7 @@ public class MessageHandler implements Handler<Message> {
 
     private boolean updateNumberOfItems(BotUser botUser) {
         botUser.gettShirtsCart().forEach(shirt -> updateNumberOfShirts(shirt.getName(), shirt.getSize()));
+        botUser.gettShirtsCart().forEach(shirt -> updateNumberOfSoldShirts(shirt.getName(), shirt.getSize()));
         botUser.getTwitchGiftsCart().stream()
                 .filter(gift -> Objects.isNull(gift.getStickersNames()))
                 .forEach(gift -> updateNumberOfGifts(gift.getName()));

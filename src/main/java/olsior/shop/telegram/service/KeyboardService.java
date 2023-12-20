@@ -319,11 +319,14 @@ public class KeyboardService {
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         KeyboardRow row1 = new KeyboardRow();
         KeyboardRow row2 = new KeyboardRow();
+        KeyboardRow row3 = new KeyboardRow();
         row1.add("Після отримання накладеним платежем ✉️");
-        row1.add("Онлайн оплата \uD83D\uDCB3");
-        row2.add("Повернутись до вибору товару ◀️");
+        row2.add("Оплата на рахунок ФОП \uD83D\uDCC4");
+        row2.add("Онлайн оплата \uD83D\uDCB3");
+        row3.add("Повернутись до вибору товару ◀️");
         keyboardRows.add(row1);
         keyboardRows.add(row2);
+        keyboardRows.add(row3);
         markup.setKeyboard(keyboardRows);
         markup.setResizeKeyboard(true);
 
@@ -353,6 +356,22 @@ public class KeyboardService {
         row1.add("Підтвердити дані ✅");
         row1.add("Повернутись до вибору товару ◀️");
         keyboardRows.add(row1);
+        markup.setKeyboard(keyboardRows);
+        markup.setResizeKeyboard(true);
+
+        return markup;
+    }
+
+    public static ReplyKeyboardMarkup getPaymentConfirmationKeyboard() {
+        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow row1 = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+        row1.add("Підтвердження оплати ✅");
+        row2.add("Допомога ❔");
+        row2.add("Повернутись до вибору товару ◀️");
+        keyboardRows.add(row1);
+        keyboardRows.add(row2);
         markup.setKeyboard(keyboardRows);
         markup.setResizeKeyboard(true);
 
