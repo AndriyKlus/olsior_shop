@@ -6,6 +6,7 @@ import olsior.shop.telegram.cache.Cache;
 import olsior.shop.telegram.db.TShirtDB;
 import olsior.shop.telegram.domain.*;
 import olsior.shop.telegram.service.SendMessageService;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -211,7 +212,7 @@ public class MessageHandler implements Handler<Message> {
 
                 case PHONE_NUMBER:
                     botUser.setPhoneNumber(message.getText());
-                    if(botUser.getDeliveryMethod().equals("Nova Post")) {
+                    if(Strings.isNotEmpty(botUser.getDeliveryMethod()) && botUser.getDeliveryMethod().equals("Nova Post")) {
                         botUser.setPosition(Position.EMAIL);
                         sendMessageService.sendInputEmail(message);
                     } else {
@@ -246,7 +247,7 @@ public class MessageHandler implements Handler<Message> {
                         case "Онлайн оплата":
                             botUser.setPosition(Position.ONLINE_PAYMENT);
                             String url = sendRequestForInvoice(botUser.gettShirtsCart());
-                            sendMessageService.sendOnlinePayment(message, url);
+                            sendMessageService.sendOnlinePayment(message, url, botUser);
                             break;
                     }
                     break;
@@ -315,7 +316,7 @@ public class MessageHandler implements Handler<Message> {
         } else if (message.hasContact()) {
             BotUser botUser = findBotUserOrCreate(message);
             botUser.setPhoneNumber(message.getContact().getPhoneNumber());
-            if(botUser.getDeliveryMethod().equals("Nova Post")) {
+            if(Strings.isNotEmpty(botUser.getDeliveryMethod()) && botUser.getDeliveryMethod().equals("Nova Post")) {
                 botUser.setPosition(Position.EMAIL);
                 sendMessageService.sendInputEmail(message);
             } else {

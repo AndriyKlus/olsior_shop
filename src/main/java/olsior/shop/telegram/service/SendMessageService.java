@@ -778,7 +778,7 @@ public class SendMessageService {
         messageSender.sendMessage(msg);
     }
 
-    public void sendOnlinePayment(Message message, String url) {
+    public void sendOnlinePayment(Message message, String url, BotUser botUser) {
         SendMessage msg = SendMessage.builder()
                 .text("Для оплати перейди по цьому посиланню: " + url + "\n" +
                         "\n" +
@@ -788,6 +788,7 @@ public class SendMessageService {
                 .parseMode("HTML")
                 .build();
         messageSender.sendMessage(msg);
+        sendMessageToAdmin(botUser);
     }
 
     public void sendWrongAddingOrder(Message message) {
@@ -849,8 +850,8 @@ public class SendMessageService {
         String textMessage = "Інформація про замовлення:\n\n" + getConfirmationFormForAdmin(botUser);
         if (botUser.getCountry().equals("Україна")) {
             if (confirmation)
-                textMessage += "\n\nНеобхідно підтвердити онлайн оплату";
-            if (Objects.nonNull(botUser.getPaymentMethod()) && botUser.getPaymentMethod().equals("Онлайн оплата")) {
+                textMessage += "\n\nНеобхідно підтвердити оплату на рахунок ФОП";
+            if (Objects.nonNull(botUser.getPaymentMethod()) && botUser.getPaymentMethod().equals("Оплата на рахунок ФОП")) {
                 SendDocument msg = SendDocument.builder()
                         .document(new InputFile(new File("receipt\\receipt_" + botUser.getId() + ".png")))
                         .caption(textMessage)
@@ -952,7 +953,9 @@ public class SendMessageService {
                 .append(botUser.getCountry())
                 .append("</b>\nАдреса: <b>")
                 .append(botUser.getAddress())
-                .append("</b>");
+                .append("</b>")
+                .append("\nМетод оплати: ")
+                .append(botUser.getPaymentMethod());
 
         if (Objects.nonNull(botUser.getPostOffice())) {
             stringBuilder.append("\nВідділення нової пошти: <b>")
