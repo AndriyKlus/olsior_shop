@@ -57,7 +57,7 @@ public class MonoService {
 
     private static PaymentRequest createPaymentRequest(List<TShirtPurchase> items) {
         return PaymentRequest.builder()
-                .amount(getSummPrice(items) * 100)
+                .amount((int) (getSummPrice(items) * 100))
                 .ccy(980)
                 .merchantPaymInfo(createMerchantPaymInfo(items))
                 .validity(3600)
@@ -82,7 +82,7 @@ public class MonoService {
         countMap.forEach((key, value) -> basketOrderItems.add(
                 BasketOrderItem.builder()
                         .name(key.getName() + " Розмір: " + key.getSize())
-                        .sum(key.getPrice() * value * 100)
+                        .sum((int)(key.getPrice() * value * 100))
                         .qty(value)
                         .unit("шт")
                         .icon(key.getImgUrl())
@@ -92,9 +92,9 @@ public class MonoService {
         return basketOrderItems;
     }
 
-    private static int getSummPrice(List<TShirtPurchase> items) {
+    private static Double getSummPrice(List<TShirtPurchase> items) {
         return items.stream()
-                .mapToInt(TShirtPurchase::getPrice)
+                .mapToDouble(TShirtPurchase::getPrice)
                 .sum();
     }
 

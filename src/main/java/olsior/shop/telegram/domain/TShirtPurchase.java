@@ -10,7 +10,7 @@ public class TShirtPurchase {
 
     private Long id;
     private String name;
-    private int price;
+    private Double price;
     private String material;
     private String size;
     private List<String> photoUrls;
@@ -24,11 +24,11 @@ public class TShirtPurchase {
         this.name = name;
     }
 
-    public int getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

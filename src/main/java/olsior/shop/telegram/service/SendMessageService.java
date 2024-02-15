@@ -102,7 +102,7 @@ public class SendMessageService {
                                 .caption(tShirt.getName() + "\n\n" +
                                         tShirt.getDescription() + "\n\n" +
                                         tShirt.getMaterial() + "\n\n" +
-                                        "Ціна футболки: " + tShirt.getPrice() + " грн" + "\n" +
+                                        (tShirt.getName().contains("худі") ?  "Ціна худі: " + tShirt.getPrice() + " грн" + "\n" : ("Ціна футболки: " + tShirt.getPrice() + " грн" + "\n")) +
                                         tShirt.getAdditionalInfo())
                                 .mediaName(mediaName)
                                 .isNewMedia(true)
@@ -183,7 +183,7 @@ public class SendMessageService {
             stringBuilder.append("Обрані товари:")
                     .append("\n\n");
             int w = 1;
-            int price = 0;
+            Double price = 0D;
             for (TShirtPurchase tShirt : botUser.gettShirtsCart()) {
                 stringBuilder.append(w++)
                         .append(". ")
@@ -737,15 +737,15 @@ public class SendMessageService {
             List<PhotoSize> photos = message.getPhoto();
             GetFile getFile = new GetFile(photos.get(photos.size() - 1).getFileId());
             org.telegram.telegrambots.meta.api.objects.File file = messageSender.findPhoto(getFile);
-            messageSender.downloadFile(file, new java.io.File("\\root\\olsiorShop\\olsior_shop\\receipt\\receipt" + "_" + message.getChatId() + ".png"));
+            messageSender.downloadFile(file, new java.io.File("receipt\\receipt" + "_" + message.getChatId() + ".png"));
         } else {
             String uploadedFileId = message.getDocument().getFileId();
             GetFile uploadedFile = new GetFile();
             uploadedFile.setFileId(uploadedFileId);
             String uploadedFilePath = messageSender.findFile(uploadedFile).getFilePath();
-            File localFile = new File("\\root\\olsiorShop\\olsior_shop\\receipt\\receipt" + "_" + message.getChatId() + ".png");
+            File localFile = new File("receipt\\receipt" + "_" + message.getChatId() + ".png");
             try {
-                InputStream is = new URL("https://api.telegram.org/file/bot" + "6020040632:AAHHL5uowE2IizwP16AmqkT8a7U0lhtF5_M" + "/" + uploadedFilePath).openStream();
+                InputStream is = new URL("https://api.telegram.org/file/bot" + "6079351624:AAHuLzS_m5wbLMfZ0jzEJh_CFkbuYlKtdk4" + "/" + uploadedFilePath).openStream();
                 FileUtils.copyInputStreamToFile(is, localFile);
             } catch (IOException e) {
                 throw new RuntimeException(e);
