@@ -11,7 +11,7 @@ public class TShirt {
 
     private final Long id;
     private final String name;
-    private final int price;
+    private final Double price;
     private final String material;
     private final String description;
     private final List<String> sizes;
@@ -23,7 +23,7 @@ public class TShirt {
         return name;
     }
 
-    public int getPrice() {
+    public Double getPrice() {
         return price;
     }
 
