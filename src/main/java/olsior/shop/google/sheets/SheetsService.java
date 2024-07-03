@@ -214,35 +214,35 @@ public class SheetsService {
     private static List<String> getCellForSticker(String sticker) {
         switch (sticker) {
             case "РЕСПЕКОТ":
-                return List.of("B9");
-            case "ПРАЙД":
-                return List.of("B10");
-            case "НАРУТО":
-                return List.of("B11");
-            case "МЯВ":
                 return List.of("B12");
-            case "БРО":
+            case "ПРАЙД":
                 return List.of("B13");
-            case "РЕЙДЖ":
+            case "НАРУТО":
                 return List.of("B14");
-            case "СІК":
+            case "МЯВ":
                 return List.of("B15");
-            case "ПЛЕД":
+            case "БРО":
                 return List.of("B16");
-            case "КЛОУН":
+            case "РЕЙДЖ":
                 return List.of("B17");
-            case "БІБЛМІРА":
+            case "СІК":
                 return List.of("B18");
-            case "ВЕСЕЛКА":
+            case "ПЛЕД":
                 return List.of("B19");
-            case "БАВОВНА":
+            case "КЛОУН":
                 return List.of("B20");
-            case "АУФ":
+            case "БІБЛМІРА":
                 return List.of("B21");
-            case "ЗРОЗ":
+            case "ВЕСЕЛКА":
                 return List.of("B22");
-            case "ШЕЙХ":
+            case "БАВОВНА":
                 return List.of("B23");
+            case "АУФ":
+                return List.of("B24");
+            case "ЗРОЗ":
+                return List.of("B25");
+            case "ШЕЙХ":
+                return List.of("B26");
         }
         return List.of("C8");
     }
